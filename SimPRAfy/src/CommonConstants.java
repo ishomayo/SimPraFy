@@ -33,6 +33,8 @@ public class CommonConstants {
     // File paths using the determined BASE_PATH
     public static final String splashScreen = BASE_PATH + "SplashScreen.jpg";
     public static final String lobbyBG = BASE_PATH + "LobbyBackground.jpg";
+    public static final String inputMethod = BASE_PATH + "SelectionBackground.jpg";
+    public static final String box = BASE_PATH + "Box.png";
 
     // Screens
     public static final String credits = BASE_PATH + "Credits.jpg";
@@ -53,6 +55,29 @@ public class CommonConstants {
     public static final String backDefault = BASE_PATH + "back.png";
     public static final String backClick = BASE_PATH + "back-click.png";
 
+    // Input Method Buttons
+    public static final String randomDefault = BASE_PATH + "random-default.png";
+    public static final String randomHover = BASE_PATH + "random-hover.png";
+    public static final String userInputDefault = BASE_PATH + "userinput-default.png";
+    public static final String userInputHover = BASE_PATH + "userinput-hover.png";
+    public static final String fileDefault = BASE_PATH + "file-default.png";
+    public static final String fileHover = BASE_PATH + "file-hover.png";
+
+    public static final String refLen = BASE_PATH + "Ref-length.png";
+    public static final String refString = BASE_PATH + "Ref-string.png";
+    public static final String frameSize = BASE_PATH + "Frame-size.png";
+
+    public static final String uploadDisabled = BASE_PATH + "upload-disabled.png";
+    public static final String uploadDefault = BASE_PATH + "upload-default.png";
+    public static final String uploadHover = BASE_PATH + "upload-hover.png";
+
+    public static final String generateDisabled = BASE_PATH + "generate-disabled.png";
+    public static final String generateDefault = BASE_PATH + "generate-default.png";
+    public static final String generateHover = BASE_PATH + "generate-hover.png";
+
+    public static final String continueDisabled = BASE_PATH + "continue-disabled.png";
+    public static final String continueDefault = BASE_PATH + "continue-default.png";
+    public static final String continueHover = BASE_PATH + "continue-hover.png";
 
     // Utility method to load images properly
     public static Image loadImage(String path) {
