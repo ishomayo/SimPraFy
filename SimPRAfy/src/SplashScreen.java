@@ -30,7 +30,7 @@ public class SplashScreen extends JWindow {
         SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
             @Override
             protected Void doInBackground() throws Exception {
-                Thread.sleep(3000); // Show for 3 seconds
+                Thread.sleep(1000); // Show for 3 seconds
                 return null;
             }
 
