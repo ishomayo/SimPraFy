@@ -1,12 +1,18 @@
 import javax.swing.*;
-// import javax.swing.border.EmptyBorder;
+import javax.swing.event.DocumentListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.event.DocumentEvent;
 
 import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-// import java.awt.event.MouseListener;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.awt.event.ActionListener;
 import java.util.Random;
 
 public class DataInputScreen extends JPanel {
@@ -14,7 +20,6 @@ public class DataInputScreen extends JPanel {
     private CardLayout layout;
     private Image backgroundImage;
     private App app;
-    // private JPanel customPanel;
     private JComboBox<Integer> dropdownRefLen;
     private JTextArea textArea;
     private JComboBox<Integer> dropdownFrameSize;
@@ -40,7 +45,6 @@ public class DataInputScreen extends JPanel {
     }
 
     public void showDataInputSelection() {
-
         JPanel panel = new JPanel(new BorderLayout()) {
             @Override
             protected void paintComponent(Graphics g) {
@@ -50,15 +54,19 @@ public class DataInputScreen extends JPanel {
                 }
             }
         };
-
         panel.setOpaque(false);
 
         this.setLayout(null);
 
-        JButton randomButton = createStyledButtonDATAINPUT(CommonConstants.randomDefault, CommonConstants.randomHover, CommonConstants.randomHover);
-        JButton userInputButton = createStyledButtonDATAINPUT(CommonConstants.userInputDefault, CommonConstants.userInputHover, CommonConstants.userInputHover);
-        JButton fileInputButton = createStyledButtonDATAINPUT(CommonConstants.fileDefault, CommonConstants.fileHover, CommonConstants.fileHover);
-        JButton backButton = createStyledButton(CommonConstants.backDefault, CommonConstants.backClick, CommonConstants.backClick);
+        JButton randomButton = createStyledButtonDATAINPUT(CommonConstants.randomDefault, 
+            CommonConstants.randomHover, CommonConstants.randomHover);
+        JButton userInputButton = createStyledButtonDATAINPUT(CommonConstants.userInputDefault, 
+            CommonConstants.userInputHover, CommonConstants.userInputHover);
+        JButton fileInputButton = createStyledButtonDATAINPUT(CommonConstants.fileDefault, 
+            CommonConstants.fileHover, CommonConstants.fileHover);
+
+        JButton backButton = createStyledButton(CommonConstants.backDefault, 
+            CommonConstants.backClick, CommonConstants.backClick);
 
         positionButtons(randomButton, userInputButton, fileInputButton, backButton);
 
@@ -70,30 +78,15 @@ public class DataInputScreen extends JPanel {
         backButton.addActionListener(e -> layout.show(mainPanel, "Lobby"));
 
         randomButton.addActionListener(e -> showGenerateRandomScreen());
-        
-        userInputButton.addActionListener(e -> {
-            // Show a dialog box with "Hello" when the userInputButton is clicked
-            JOptionPane.showMessageDialog(this, 
-                "Hello", 
-                "User Input", 
-                JOptionPane.INFORMATION_MESSAGE);
-        });
-        
-        fileInputButton.addActionListener(e -> {
-            // Show a dialog box with "Hello" when the fileInputButton is clicked
-            JOptionPane.showMessageDialog(this, 
-                "Hello", 
-                "File Input", 
-                JOptionPane.INFORMATION_MESSAGE);
-        });
-        
+        userInputButton.addActionListener(e -> showUserInputScreen());
+        fileInputButton.addActionListener(e -> showFileInputScreen());
+    
         mainPanel.add(panel, "DataInputSelection");
     }
 
     private void showGenerateRandomScreen() {
         ImageIcon backgroundImage = new ImageIcon(CommonConstants.inputMethod); // Replace with your image file
 
-        // Create custom JPanel to paint background
         JPanel randomDataPanel = new JPanel(null) {
             @Override
             protected void paintComponent(Graphics g) {
@@ -101,7 +94,6 @@ public class DataInputScreen extends JPanel {
                 g.drawImage(backgroundImage.getImage(), 0, 0, getWidth(), getHeight(), this);
             }
         };
-
         randomDataPanel.setOpaque(false);
 
         JButton backButton = createStyledButton(CommonConstants.backDefault, CommonConstants.backClick, CommonConstants.backClick);
@@ -121,7 +113,7 @@ public class DataInputScreen extends JPanel {
         JLabel fileLabel = new JLabel(fileIcon);
         fileLabel.setBounds(210, 610, 200, 92);
 
-        JPanel customPanel = createCustomPanel();
+        JPanel customPanel = createCustomPanel("random");
         
         randomDataPanel.add(randomLabel);
         randomDataPanel.add(userInputLabel);
@@ -132,6 +124,88 @@ public class DataInputScreen extends JPanel {
         layout.show(mainPanel, "RandomDataScreen");
     }
 
+    private void showUserInputScreen() {
+        ImageIcon backgroundImage = new ImageIcon(CommonConstants.inputMethod); // Replace with your image file
+
+        JPanel userInputPanel = new JPanel(null) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                g.drawImage(backgroundImage.getImage(), 0, 0, getWidth(), getHeight(), this);
+            }
+        };
+        userInputPanel.setOpaque(false);
+
+        JButton backButton = createStyledButton(CommonConstants.backDefault, CommonConstants.backClick, CommonConstants.backClick);
+        backButton.setBounds(20, 200, 50, 50);
+        userInputPanel.add(backButton);
+        backButton.addActionListener(e -> layout.show(mainPanel, "Lobby"));
+
+        ImageIcon randomIcon = scaleImage(CommonConstants.randomDefault, new Dimension(200, 92));
+        JLabel randomLabel = new JLabel(randomIcon);
+        randomLabel.setBounds(210, 350, 200, 92);
+        
+        ImageIcon userInputIcon = scaleImage(CommonConstants.userInputHover, new Dimension(200, 92));
+        JLabel userInputLabel = new JLabel(userInputIcon);
+        userInputLabel.setBounds(210, 480, 200, 92);
+
+        ImageIcon fileIcon = scaleImage(CommonConstants.fileDefault, new Dimension(200, 92));
+        JLabel fileLabel = new JLabel(fileIcon);
+        fileLabel.setBounds(210, 610, 200, 92);
+
+        JPanel customPanel = createCustomPanel("user input");
+        
+        userInputPanel.add(randomLabel);
+        userInputPanel.add(userInputLabel);
+        userInputPanel.add(fileLabel);
+        userInputPanel.add(customPanel);
+
+        mainPanel.add(userInputPanel, "UserInputScreen");
+        layout.show(mainPanel, "UserInputScreen");
+    }
+
+    private void showFileInputScreen() {
+        ImageIcon backgroundImage = new ImageIcon(CommonConstants.inputMethod); // Replace with your image file
+
+        // Create custom JPanel to paint background
+        JPanel fileInputPanel = new JPanel(null) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                g.drawImage(backgroundImage.getImage(), 0, 0, getWidth(), getHeight(), this);
+            }
+        };
+
+        fileInputPanel.setOpaque(false);
+
+        JButton backButton = createStyledButton(CommonConstants.backDefault, CommonConstants.backClick, CommonConstants.backClick);
+        backButton.setBounds(20, 200, 50, 50);
+        fileInputPanel.add(backButton);
+        backButton.addActionListener(e -> layout.show(mainPanel, "Lobby"));
+
+        ImageIcon randomIcon = scaleImage(CommonConstants.randomDefault, new Dimension(200, 92));
+        JLabel randomLabel = new JLabel(randomIcon);
+        randomLabel.setBounds(210, 350, 200, 92);
+        
+        ImageIcon userInputIcon = scaleImage(CommonConstants.userInputDefault, new Dimension(200, 92));
+        JLabel userInputLabel = new JLabel(userInputIcon);
+        userInputLabel.setBounds(210, 480, 200, 92);
+
+        ImageIcon fileIcon = scaleImage(CommonConstants.fileHover, new Dimension(200, 92));
+        JLabel fileLabel = new JLabel(fileIcon);
+        fileLabel.setBounds(210, 610, 200, 92);
+
+        JPanel customPanel = createCustomPanel("file input");
+        
+        fileInputPanel.add(randomLabel);
+        fileInputPanel.add(userInputLabel);
+        fileInputPanel.add(fileLabel);
+        fileInputPanel.add(customPanel);
+
+        mainPanel.add(fileInputPanel, "FileInputScreen");
+        layout.show(mainPanel, "FileInputScreen");
+    }
+
     private void positionButtons(JButton randomButton, JButton userInputButton, JButton fileInputButton, JButton backButton) {
         int x = 210, y = 350, spacing = 130;
         randomButton.setBounds(x, y, 200, 92);
@@ -140,7 +214,7 @@ public class DataInputScreen extends JPanel {
         backButton.setBounds(20, 200, 50, 50);
     }
 
-    private JPanel createCustomPanel() {
+    private JPanel createCustomPanel(String method) {
         JPanel customPanel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -158,25 +232,32 @@ public class DataInputScreen extends JPanel {
         customPanel.setOpaque(false);
         customPanel.setLayout(null);
 
-        addCustomComponents(customPanel);
+        addCustomComponents(customPanel, method);
 
         return customPanel;
     }
 
-    private void addCustomComponents(JPanel customPanel) {
+    private void addCustomComponents(JPanel customPanel, String method) {
         addImageLabel(customPanel, CommonConstants.refLen, 50, 50, 500, 37);
         dropdownRefLen = new JComboBox<>();
-        dropdownRefLen = addDropdown(customPanel, createIntegerArray(10, 40), 100, 100, 100, 40);
+        dropdownRefLen = addDropdown(customPanel, createIntegerArray(10, 40), 100, 100, 100, 40, method);
 
         addImageLabel(customPanel, CommonConstants.refString, 50, 200, 500, 37);
         textArea = new JTextArea();
-        textArea = addTextArea(customPanel, "0-20 (Separated by space)", 100, 250, 660, 70);
+        textArea = addTextArea(customPanel, "0-20 (Separated by space)", 100, 250, 660, 70, method);
 
         addImageLabel(customPanel, CommonConstants.frameSize, 50, 350, 500, 37);
         dropdownFrameSize = new JComboBox<>();
-        dropdownFrameSize = addDropdown(customPanel, createIntegerArray(3, 10), 100, 400, 100, 40);
+        dropdownFrameSize = addDropdown(customPanel, createIntegerArray(3, 10), 100, 400, 100, 40, method);
 
-        addBottomButtons(customPanel, dropdownRefLen, textArea, dropdownFrameSize);
+        if(method.equalsIgnoreCase("user input")) {
+            addUserInputButtons(customPanel, dropdownRefLen, textArea, dropdownFrameSize);
+        } else if(method.equalsIgnoreCase("random")) {
+            // Random Data Input
+            addRandomBottomButtons(customPanel, dropdownRefLen, textArea, dropdownFrameSize);
+        } else {
+            addFileInputButtons(customPanel, dropdownRefLen, textArea, dropdownFrameSize);
+        }
     }
 
     private void addImageLabel(JPanel panel, String imagePath, int x, int y, int width, int height) {
@@ -186,24 +267,24 @@ public class DataInputScreen extends JPanel {
         panel.add(imageLabel);
     }
 
-    private JComboBox<Integer> addDropdown(JPanel panel, Integer [] option, int x, int y, int width, int height) {
+    private JComboBox<Integer> addDropdown(JPanel panel, Integer [] option, int x, int y, int width, int height, String method) {
         JComboBox<Integer> dropdown = new JComboBox<>(option);
         dropdown.setSelectedItem(null);
         dropdown.setBounds(x, y, width, height);
         dropdown.setFont(new Font("Arial", Font.BOLD, 24));
         dropdown.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 0));
-        dropdown.setEnabled(false);
+        dropdown.setEnabled("user input".equalsIgnoreCase(method));
         panel.add(dropdown);
         return dropdown;
     }
 
-    private JTextArea addTextArea(JPanel panel, String placeholderText, int x, int y, int width, int height) {
+    private JTextArea addTextArea(JPanel panel, String placeholderText, int x, int y, int width, int height, String method) {
         JTextArea textArea = new JTextArea();
         textArea.setBounds(x, y, width, height);
         textArea.setFont(new Font("Arial", Font.PLAIN, 24));
         textArea.setText(placeholderText);
         textArea.setForeground(Color.GRAY);
-        textArea.setEnabled(false);
+        textArea.setEnabled("user input".equalsIgnoreCase(method));
 
         textArea.addFocusListener(new FocusAdapter() {
             @Override
@@ -240,7 +321,160 @@ public class DataInputScreen extends JPanel {
         return array;
     }
 
-    private void addBottomButtons(JPanel panel, JComboBox<Integer> dropdownRefLen, JTextArea textArea, JComboBox<Integer> dropdownFrameSize) {
+    private void addUserInputButtons(JPanel panel, JComboBox<Integer> dropdownRefLen, JTextArea textArea, JComboBox<Integer> dropdownFrameSize) {
+        JButton continueButton = createStyledButton(
+            CommonConstants.continueDefault, 
+            CommonConstants.continueHover, 
+            CommonConstants.continueHover, 
+            200, 50
+        );
+    
+        int panelWidth = panel.getWidth();
+        int panelHeight = panel.getHeight();
+        int buttonY = panelHeight - 80;
+        continueButton.setBounds((panelWidth - 200) / 2, buttonY, 200, 50);
+
+        continueButton.setEnabled(false);
+
+        // Add listeners to enable the button when all fields are valid
+        ActionListener validationListener = new ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                boolean isValid = validateUserInput(dropdownRefLen, textArea, dropdownFrameSize);
+                continueButton.setEnabled(isValid);
+            }
+        };
+
+        continueButton.addActionListener(event -> {
+            if (continueButton.isEnabled()) {
+                app.selectAlgorithmScreen(); 
+                layout.show(mainPanel, "SelectAlgorithmScreen");
+            }
+        });
+
+        dropdownRefLen.addActionListener(validationListener);
+        textArea.getDocument().addDocumentListener(new DocumentListener() {
+            public void insertUpdate(DocumentEvent e) { validationListener.actionPerformed(null); }
+            public void removeUpdate(DocumentEvent e) { validationListener.actionPerformed(null); }
+            public void changedUpdate(DocumentEvent e) { validationListener.actionPerformed(null); }
+        });
+        dropdownFrameSize.addActionListener(validationListener);
+
+        panel.add(continueButton);
+    }
+
+    private boolean validateUserInput(JComboBox<Integer> dropdownRefLen, JTextArea textArea, JComboBox<Integer> dropdownFrameSize) {
+        if (dropdownRefLen.getSelectedItem() == null || dropdownFrameSize.getSelectedItem() == null) {
+            return false;
+        }
+
+        int refLen = (Integer) dropdownRefLen.getSelectedItem();
+        String text = textArea.getText().trim();
+        String[] values = text.split(" ");
+
+        if (values.length != refLen) {
+            return false;
+        }
+
+        for (String value : values) {
+            try {
+                int num = Integer.parseInt(value.trim());
+                if (num < 0 || num > 20) {
+                    return false;
+                }
+            } catch (NumberFormatException e) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private void addFileInputButtons(JPanel panel, JComboBox<Integer> dropdownRefLen, JTextArea textArea, JComboBox<Integer> dropdownFrameSize) {
+        JButton uploadButton = createStyledButton(
+            CommonConstants.uploadDefault, 
+            CommonConstants.uploadHover, 
+            CommonConstants.uploadHover, 
+            200, 50
+        );
+    
+        JButton continueButton = createStyledButton(
+            CommonConstants.continueDefault, 
+            CommonConstants.continueHover, 
+            CommonConstants.continueHover, 
+            200, 50
+        );
+    
+        // Position the buttons at the bottom of customPanel
+        int panelWidth = panel.getWidth();
+        int panelHeight = panel.getHeight();
+        int buttonY = panelHeight - 80; // Adjusted position from bottom
+    
+        uploadButton.setBounds(panelWidth / 2 - 220, buttonY, 200, 50);
+        continueButton.setBounds(panelWidth / 2 + 20, buttonY, 200, 50);
+
+        continueButton.setEnabled(false);
+
+        uploadButton.addActionListener(e -> {
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setFileFilter(new FileNameExtensionFilter("Text Files", "txt"));
+            int returnValue = fileChooser.showOpenDialog(null);
+            
+            if (returnValue == JFileChooser.APPROVE_OPTION) {
+                File selectedFile = fileChooser.getSelectedFile();
+                try (BufferedReader reader = new BufferedReader(new FileReader(selectedFile))) {
+                    String refLenStr = reader.readLine();
+                    String referenceString = reader.readLine();
+                    String frameSizeStr = reader.readLine();
+
+                    if (refLenStr != null && referenceString != null && frameSizeStr != null) {
+                        int refLen = Integer.parseInt(refLenStr.trim());
+                        int frameSize = Integer.parseInt(frameSizeStr.trim());
+
+                        // Validate the reference string
+                        String[] values = referenceString.split(" ");
+                        if (values.length == refLen) {
+                            boolean isValid = true;
+                            for (String value : values) {
+                                int num = Integer.parseInt(value.trim());
+                                if (num < 0 || num > 20) {
+                                    isValid = false;
+                                    break;
+                                }
+                            }
+
+                            if (isValid) {
+                                dropdownRefLen.setSelectedItem(refLen);
+                                textArea.setText(referenceString);
+                                dropdownFrameSize.setSelectedItem(frameSize);
+                                continueButton.setEnabled(true);
+                            } else {
+                                JOptionPane.showMessageDialog(null, "Invalid reference string values.");
+                            }
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Reference string length mismatch.");
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "File format incorrect.");
+                    }
+                } catch (IOException | NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(null, "Error reading the file.");
+                }
+            }
+        });
+
+        continueButton.addActionListener(event -> {
+            if (continueButton.isEnabled()) {
+                app.selectAlgorithmScreen(); 
+                layout.show(mainPanel, "SelectAlgorithmScreen");
+            }
+        });
+
+        panel.add(uploadButton);
+        panel.add(continueButton);
+    }
+
+    private void addRandomBottomButtons(JPanel panel, JComboBox<Integer> dropdownRefLen, JTextArea textArea, JComboBox<Integer> dropdownFrameSize) {
         JButton generateButton = createStyledButton(
             CommonConstants.generateDefault, 
             CommonConstants.generateHover, 
@@ -269,6 +503,13 @@ public class DataInputScreen extends JPanel {
             generateRandomData(dropdownRefLen, textArea, dropdownFrameSize);
             continueButton.setEnabled(true);
         });
+
+        continueButton.addActionListener(event -> {
+            if (continueButton.isEnabled()) {
+                app.selectAlgorithmScreen(); 
+                layout.show(mainPanel, "SelectAlgorithmScreen");
+            }
+        });
     
         panel.add(generateButton);
         panel.add(continueButton);
@@ -293,6 +534,18 @@ public class DataInputScreen extends JPanel {
         // Generate random Frame Size
         int frameSize = random.nextInt(8) + 3; // Random number between 3 and 10
         dropdownFrameSize.setSelectedItem(frameSize);
+    }
+
+    public JComboBox<Integer> getDropdownRefLen() {
+        return dropdownRefLen;
+    }
+
+    public JTextArea getTextArea() {
+        return textArea;
+    }
+
+    public JComboBox<Integer> getDropdownFrameSize() {
+        return dropdownFrameSize;
     }
     
     private JButton createStyledButton(String defaultImg, String hoverImg, String clickImg, int width, int height) {
