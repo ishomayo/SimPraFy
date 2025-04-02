@@ -34,10 +34,11 @@ public class CommonConstants {
     public static final String splashScreen = BASE_PATH + "SplashScreen.jpg";
     public static final String lobbyBG = BASE_PATH + "LobbyBackground.jpg";
     public static final String inputMethod = BASE_PATH + "SelectionBackground.jpg";
+    public static final String selectAlgoBG = BASE_PATH + "SelectAlgorithmBackground.png";
     public static final String box = BASE_PATH + "Box.png";
 
     // Screens
-    public static final String credits = BASE_PATH + "Credits.jpg";
+    public static final String credits = BASE_PATH + "Credits.png";
 
     // Lobby Buttons
     public static final String startDefault = BASE_PATH + "start-default.png";
@@ -78,6 +79,16 @@ public class CommonConstants {
     public static final String continueDisabled = BASE_PATH + "continue-disabled.png";
     public static final String continueDefault = BASE_PATH + "continue-default.png";
     public static final String continueHover = BASE_PATH + "continue-hover.png";
+
+    // Algorithm Buttons
+    public static final String fifoDefault = BASE_PATH + "fifo-default.png";
+    public static final String lruDefault = BASE_PATH + "lru-default.png";
+    public static final String escaDefault = BASE_PATH + "esca-default.png";
+    public static final String scaDefault = BASE_PATH + "sca-default.png";
+    public static final String allDefault = BASE_PATH + "all-default.png";
+    public static final String mfuDefault = BASE_PATH + "mfu-default.png";
+    public static final String lfuDefault = BASE_PATH + "lfu-default.png";
+    public static final String optDefault = BASE_PATH + "opt-default.png";
 
     // Utility method to load images properly
     public static Image loadImage(String path) {
