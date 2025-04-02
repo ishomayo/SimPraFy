@@ -1,15 +1,15 @@
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
+// import javax.swing.JCheckBox;
+// import javax.swing.JComboBox;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
+// import javax.swing.JLabel;
+// import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
+// import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
-import java.awt.event.ActionEvent;
+// import java.awt.event.ActionEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -17,7 +17,7 @@ import javax.swing.BoxLayout;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.ActionListener;
+// import java.awt.event.ActionListener;
 
 public class App extends JFrame {
 
@@ -25,6 +25,10 @@ public class App extends JFrame {
     private CardLayout layout = new CardLayout();
     private JPanel mainPanel = new JPanel(layout);
     private DataInputScreen dataInputScreen;
+
+    private static final int BASE_X = 250;  // Base X position for adjustments
+    private static final int BASE_Y = 400;  // Base Y position for adjustments
+    private static final double SCALE = 1.2; // Adjust this for scaling
 
     public static void main(String[] args) throws Exception {
         SwingUtilities.invokeLater(() -> {
@@ -83,10 +87,14 @@ public class App extends JFrame {
         buttonPanel.setOpaque(false); // Transparent button panel
 
         // Create buttons
-        JButton startButton = createStyledButton(CommonConstants.startDefault, CommonConstants.startHover, CommonConstants.startClick);
-        JButton creditsButton = createStyledButton(CommonConstants.creditsDefault, CommonConstants.creditsHover, CommonConstants.creditsClick);
-        JButton helpButton = createStyledButton(CommonConstants.helpDefault, CommonConstants.helpHover, CommonConstants.helpClick);
-        JButton exitButton = createStyledButton(CommonConstants.exitDefault, CommonConstants.exitHover, CommonConstants.exitClick);
+        JButton startButton = createStyledButton(CommonConstants.startDefault, 
+            CommonConstants.startHover, CommonConstants.startClick, new Dimension(278, 80));
+        JButton creditsButton = createStyledButton(CommonConstants.creditsDefault, 
+            CommonConstants.creditsHover, CommonConstants.creditsClick, new Dimension(278, 80));
+        JButton helpButton = createStyledButton(CommonConstants.helpDefault, 
+            CommonConstants.helpHover, CommonConstants.helpClick, new Dimension(278, 80));
+        JButton exitButton = createStyledButton(CommonConstants.exitDefault, 
+            CommonConstants.exitHover, CommonConstants.exitClick, new Dimension(278, 80));
 
         // Add spacing between buttons and center-align them
         addButtonsToPanel(buttonPanel, startButton, creditsButton, helpButton, exitButton);
@@ -123,12 +131,12 @@ public class App extends JFrame {
     //****************************************************************************************
     
     // Helper method for button styling
-    private static JButton createStyledButton(String defaultIconPath, String hoverIconPath, String clickIconPath) {
+    private static JButton createStyledButton(String defaultIconPath, String hoverIconPath, String clickIconPath, Dimension size) {
         JButton button = new JButton();
         button.setContentAreaFilled(false);
         button.setFocusPainted(false);
         button.setBorderPainted(false);
-        button.setPreferredSize(new Dimension(278, 80));
+        button.setPreferredSize(size);
 
         // Load and scale the images
         ImageIcon defaultIcon = scaleImage(defaultIconPath, button.getPreferredSize());
@@ -170,70 +178,66 @@ public class App extends JFrame {
     }
 
     public void selectAlgorithmScreen() {
-        // ImageIcon backgroundImage = new ImageIcon(CommonConstants.inputMethod);
+        ImageIcon backgroundImage = new ImageIcon(CommonConstants.selectAlgoBG);
 
-        // JPanel algorithmPanel = new JPanel(new BorderLayout()) {
-        //     @Override
-        //     protected void paintComponent(Graphics g) {
-        //         super.paintComponent(g);
-        //         g.drawImage(backgroundImage.getImage(), 0, 0, getWidth(), getHeight(), this);
-        //     }
-        // };
-
-        // algorithmPanel.setOpaque(false);
-
-        // this.setLayout(null);
-
-        // JButton fifo = createStyledButton(CommonConstants.startDefault, CommonConstants.startHover, CommonConstants.startClick);
-
-        JPanel algorithmPanel = new JPanel();
-        algorithmPanel.setLayout(new BorderLayout());
-
-        // Title for the algorithm selection screen
-        JLabel titleLabel = new JLabel("Select Page Replacement Algorithm", SwingConstants.CENTER);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
-
-        // Panel for algorithm selection
-        JPanel selectionPanel = new JPanel();
-        selectionPanel.setLayout(new BoxLayout(selectionPanel, BoxLayout.Y_AXIS));
-
-        String[] algorithms = {"FIFO", "LRU", "OPT", "Second Chance", "Enhanced Second Chance", "LFU", "MFU"};
-        JComboBox<String> algorithmDropdown = new JComboBox<>(algorithms);
-        selectionPanel.add(algorithmDropdown);
-
-        JCheckBox allAlgorithmsCheckBox = new JCheckBox("Run all algorithms");
-        selectionPanel.add(allAlgorithmsCheckBox);
-
-        // Simulate Button
-        JButton simulateButton = new JButton("Simulate");
-        simulateButton.addActionListener(new ActionListener() {
+        JPanel algorithmPanel = new JPanel(null) {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                if (allAlgorithmsCheckBox.isSelected()) {
-                    JOptionPane.showMessageDialog(null, "You selected: All Algorithms");
-                    // Call all algorithm simulations here
-                } else {
-                    String selectedAlgorithm = (String) algorithmDropdown.getSelectedItem();
-                    JOptionPane.showMessageDialog(null, "You selected: " + selectedAlgorithm);
-                    // Call the selected algorithm simulation here
-                }
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                g.drawImage(backgroundImage.getImage(), 0, 0, getWidth(), getHeight(), this);
             }
-        });
+        };
 
-        selectionPanel.add(simulateButton);
+        algorithmPanel.setOpaque(false);
 
-        // Navigation Panel (Back button)
-        JPanel navigationPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 20));
-        JButton backButton = new JButton("Back");
+        this.setLayout(null);
+
+        JButton backButton = createStyledButton(CommonConstants.backDefault, 
+            CommonConstants.backClick, CommonConstants.backClick, new Dimension(50, 50));
+        backButton.setBounds(20, 200, 50, 50);
+        algorithmPanel.add(backButton);
         backButton.addActionListener(e -> layout.show(mainPanel, "Lobby"));
-        navigationPanel.add(backButton);
 
-        algorithmPanel.add(titleLabel, BorderLayout.NORTH);
-        algorithmPanel.add(selectionPanel, BorderLayout.CENTER);
-        algorithmPanel.add(navigationPanel, BorderLayout.SOUTH);
+        JButton fifoButton = createStyledButton(CommonConstants.fifoDefault, 
+            CommonConstants.fifoDefault, CommonConstants.fifoDefault, new Dimension(300, 201));
+        JButton lruButton = createStyledButton(CommonConstants.lruDefault, 
+            CommonConstants.lruDefault, CommonConstants.lruDefault, new Dimension(217, 201));
+        JButton scaButton = createStyledButton(CommonConstants.scaDefault, 
+            CommonConstants.scaDefault, CommonConstants.scaDefault, new Dimension(258, 105));
+        JButton escaButton = createStyledButton(CommonConstants.escaDefault, 
+            CommonConstants.escaDefault, CommonConstants.escaDefault, new Dimension(258, 105));
+        JButton optButton = createStyledButton(CommonConstants.optDefault, 
+            CommonConstants.optDefault, CommonConstants.optDefault, new Dimension(284, 120));
+        JButton lfuButton = createStyledButton(CommonConstants.lfuDefault, 
+            CommonConstants.lfuDefault, CommonConstants.lfuDefault, new Dimension(284, 186));
+        JButton mfuButton = createStyledButton(CommonConstants.mfuDefault, 
+            CommonConstants.mfuDefault, CommonConstants.mfuDefault, new Dimension(109, 201));
+        JButton allButton = createStyledButton(CommonConstants.allDefault, 
+            CommonConstants.allDefault, CommonConstants.allDefault, new Dimension(109, 105));          
+
+        positionButtons(fifoButton, lruButton, scaButton, escaButton, optButton, lfuButton, mfuButton, allButton);
+
+        algorithmPanel.add(fifoButton);
+        algorithmPanel.add(lruButton);
+        algorithmPanel.add(scaButton);
+        algorithmPanel.add(escaButton);
+        algorithmPanel.add(optButton);
+        algorithmPanel.add(lfuButton);
+        algorithmPanel.add(mfuButton);
+        algorithmPanel.add(allButton);
 
         mainPanel.add(algorithmPanel, "AlgorithmSelection");
-
         layout.show(mainPanel, "AlgorithmSelection"); // Show the Algorithm Selection screen
+    }
+
+    private void positionButtons(JButton fifo, JButton lru, JButton sca, JButton esca, JButton opt, JButton lfu, JButton mfu, JButton all) {
+        fifo.setBounds(280, 350, 300, 201);
+        lru.setBounds(590, 350, 217, 201);
+        sca.setBounds(280, 560, 258, 105);
+        esca.setBounds(548, 560, 258, 105);
+        opt.setBounds(817, 350, 284, 120);
+        lfu.setBounds(817, 480, 284, 186);
+        mfu.setBounds(1110, 350, 109, 201);
+        all.setBounds(1110, 561, 109, 105);
     }
 }
