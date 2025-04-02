@@ -2,7 +2,7 @@ import javax.swing.*;
 import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.event.DocumentEvent;
-
+import java.awt.image.BufferedImage;
 import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
@@ -32,6 +32,7 @@ public class DataInputScreen extends JPanel {
         backgroundImage = new ImageIcon(CommonConstants.inputMethod).getImage();
 
         setLayout(new BorderLayout());
+        setPreferredSize(new Dimension(900, 600));
         showDataInputSelection();
     }
 
@@ -633,8 +634,20 @@ public class DataInputScreen extends JPanel {
     }        
 
     private static ImageIcon scaleImage(String imagePath, Dimension size) {
+        // Load the image
         ImageIcon icon = new ImageIcon(imagePath);
-        Image img = icon.getImage().getScaledInstance(size.width, size.height, Image.SCALE_SMOOTH);
-        return new ImageIcon(img);
+        Image img = icon.getImage();
+    
+        // Create a new image with the required size
+        BufferedImage bufferedImage = new BufferedImage(size.width, size.height, BufferedImage.TYPE_INT_ARGB);
+    
+        // Create a Graphics2D object to apply scaling
+        Graphics2D g2d = bufferedImage.createGraphics();
+        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);  // High-quality scaling
+        g2d.drawImage(img, 0, 0, size.width, size.height, null);
+        g2d.dispose(); // Don't forget to dispose of the Graphics2D object
+    
+        return new ImageIcon(bufferedImage);  // Return the scaled image as ImageIcon
     }
+    
 }
