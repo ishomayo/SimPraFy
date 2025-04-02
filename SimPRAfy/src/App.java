@@ -1,14 +1,23 @@
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+
+import java.awt.event.ActionEvent;
+
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.ActionListener;
 
 public class App extends JFrame {
 
@@ -158,5 +167,73 @@ public class App extends JFrame {
         ImageIcon icon = new ImageIcon(imagePath);
         Image img = icon.getImage().getScaledInstance(size.width, size.height, Image.SCALE_SMOOTH);
         return new ImageIcon(img);
+    }
+
+    public void selectAlgorithmScreen() {
+        // ImageIcon backgroundImage = new ImageIcon(CommonConstants.inputMethod);
+
+        // JPanel algorithmPanel = new JPanel(new BorderLayout()) {
+        //     @Override
+        //     protected void paintComponent(Graphics g) {
+        //         super.paintComponent(g);
+        //         g.drawImage(backgroundImage.getImage(), 0, 0, getWidth(), getHeight(), this);
+        //     }
+        // };
+
+        // algorithmPanel.setOpaque(false);
+
+        // this.setLayout(null);
+
+        // JButton fifo = createStyledButton(CommonConstants.startDefault, CommonConstants.startHover, CommonConstants.startClick);
+
+        JPanel algorithmPanel = new JPanel();
+        algorithmPanel.setLayout(new BorderLayout());
+
+        // Title for the algorithm selection screen
+        JLabel titleLabel = new JLabel("Select Page Replacement Algorithm", SwingConstants.CENTER);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
+
+        // Panel for algorithm selection
+        JPanel selectionPanel = new JPanel();
+        selectionPanel.setLayout(new BoxLayout(selectionPanel, BoxLayout.Y_AXIS));
+
+        String[] algorithms = {"FIFO", "LRU", "OPT", "Second Chance", "Enhanced Second Chance", "LFU", "MFU"};
+        JComboBox<String> algorithmDropdown = new JComboBox<>(algorithms);
+        selectionPanel.add(algorithmDropdown);
+
+        JCheckBox allAlgorithmsCheckBox = new JCheckBox("Run all algorithms");
+        selectionPanel.add(allAlgorithmsCheckBox);
+
+        // Simulate Button
+        JButton simulateButton = new JButton("Simulate");
+        simulateButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (allAlgorithmsCheckBox.isSelected()) {
+                    JOptionPane.showMessageDialog(null, "You selected: All Algorithms");
+                    // Call all algorithm simulations here
+                } else {
+                    String selectedAlgorithm = (String) algorithmDropdown.getSelectedItem();
+                    JOptionPane.showMessageDialog(null, "You selected: " + selectedAlgorithm);
+                    // Call the selected algorithm simulation here
+                }
+            }
+        });
+
+        selectionPanel.add(simulateButton);
+
+        // Navigation Panel (Back button)
+        JPanel navigationPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 20));
+        JButton backButton = new JButton("Back");
+        backButton.addActionListener(e -> layout.show(mainPanel, "Lobby"));
+        navigationPanel.add(backButton);
+
+        algorithmPanel.add(titleLabel, BorderLayout.NORTH);
+        algorithmPanel.add(selectionPanel, BorderLayout.CENTER);
+        algorithmPanel.add(navigationPanel, BorderLayout.SOUTH);
+
+        mainPanel.add(algorithmPanel, "AlgorithmSelection");
+
+        layout.show(mainPanel, "AlgorithmSelection"); // Show the Algorithm Selection screen
     }
 }
