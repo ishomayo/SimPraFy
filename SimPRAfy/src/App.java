@@ -3,12 +3,14 @@ import javax.swing.JButton;
 // import javax.swing.JCheckBox;
 // import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 // import javax.swing.JLabel;
 // import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 // import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
-import java.awt.image.BufferedImage;
+
 // import java.awt.event.ActionEvent;
 
 import javax.swing.BorderFactory;
@@ -21,7 +23,7 @@ import java.awt.event.MouseEvent;
 
 public class App extends JFrame {
 
-    protected static int width = 900, height = 600;
+    protected static int width = 1500, height = 844;
     private CardLayout layout = new CardLayout();
     private JPanel mainPanel = new JPanel(layout);
     private DataInputScreen dataInputScreen;
@@ -71,7 +73,7 @@ public class App extends JFrame {
         JPanel buttonPanel = createButtonPanel();
 
         // Add padding to move buttonPanel lower
-        buttonPanel.setBorder(BorderFactory.createEmptyBorder(200, 0, 0, 0)); // Move it down by 200px
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(300, 0, 0, 0)); // Move it down by 200px
 
         // Add buttonPanel to CENTER of lobbyPanel
         lobbyPanel.add(buttonPanel, BorderLayout.CENTER);
@@ -88,13 +90,13 @@ public class App extends JFrame {
 
         // Create buttons
         JButton startButton = createStyledButton(CommonConstants.startDefault,
-                CommonConstants.startHover, CommonConstants.startClick);
+                CommonConstants.startHover, CommonConstants.startClick, new Dimension(278, 80));
         JButton creditsButton = createStyledButton(CommonConstants.creditsDefault,
-                CommonConstants.creditsHover, CommonConstants.creditsClick);
+                CommonConstants.creditsHover, CommonConstants.creditsClick, new Dimension(278, 80));
         JButton helpButton = createStyledButton(CommonConstants.helpDefault,
-                CommonConstants.helpHover, CommonConstants.helpClick);
+                CommonConstants.helpHover, CommonConstants.helpClick, new Dimension(278, 80));
         JButton exitButton = createStyledButton(CommonConstants.exitDefault,
-                CommonConstants.exitHover, CommonConstants.exitClick);
+                CommonConstants.exitHover, CommonConstants.exitClick, new Dimension(278, 80));
 
         // Add spacing between buttons and center-align them
         addButtonsToPanel(buttonPanel, startButton, creditsButton, helpButton, exitButton);
@@ -132,13 +134,13 @@ public class App extends JFrame {
     // ****************************************************************************************
 
     // Helper method for button styling
-    // Button icon with sharp scaling
-    private static JButton createStyledButton(String defaultIconPath, String hoverIconPath, String clickIconPath) {
+    private static JButton createStyledButton(String defaultIconPath, String hoverIconPath, String clickIconPath,
+            Dimension size) {
         JButton button = new JButton();
         button.setContentAreaFilled(false);
         button.setFocusPainted(false);
         button.setBorderPainted(false);
-        button.setPreferredSize(new Dimension(150, 50));
+        button.setPreferredSize(size);
 
         // Load and scale the images
         ImageIcon defaultIcon = scaleImage(defaultIconPath, button.getPreferredSize());
@@ -174,27 +176,10 @@ public class App extends JFrame {
 
     // Helper method to scale an image to fit the button
     private static ImageIcon scaleImage(String imagePath, Dimension size) {
-        // Load the image
         ImageIcon icon = new ImageIcon(imagePath);
-        Image img = icon.getImage();
-    
-        // Create a new BufferedImage to store the scaled image
-        BufferedImage bufferedImage = new BufferedImage(size.width, size.height, BufferedImage.TYPE_INT_ARGB);
-    
-        // Create Graphics2D object for scaling the image with rendering hints
-        Graphics2D g2d = bufferedImage.createGraphics();
-        
-        // Use high-quality interpolation for scaling
-        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);  // Better scaling
-        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);  // Anti-aliasing for smooth edges
-        
-        // Draw the image at the desired size
-        g2d.drawImage(img, 0, 0, size.width, size.height, null);
-        g2d.dispose(); // Clean up
-    
-        return new ImageIcon(bufferedImage);  // Return the scaled image as ImageIcon
+        Image img = icon.getImage().getScaledInstance(size.width, size.height, Image.SCALE_SMOOTH);
+        return new ImageIcon(img);
     }
-    
 
     public void selectAlgorithmScreen() {
         ImageIcon backgroundImage = new ImageIcon(CommonConstants.selectAlgoBG);
@@ -212,27 +197,27 @@ public class App extends JFrame {
         this.setLayout(null);
 
         JButton backButton = createStyledButton(CommonConstants.backDefault,
-                CommonConstants.backClick, CommonConstants.backClick);
+                CommonConstants.backClick, CommonConstants.backClick, new Dimension(50, 50));
         backButton.setBounds(20, 200, 50, 50);
         algorithmPanel.add(backButton);
         backButton.addActionListener(e -> layout.show(mainPanel, "Lobby"));
 
         JButton fifoButton = createStyledButton(CommonConstants.fifoDefault,
-                CommonConstants.fifoDefault, CommonConstants.fifoDefault);
+                CommonConstants.fifoDefault, CommonConstants.fifoDefault, new Dimension(300, 201));
         JButton lruButton = createStyledButton(CommonConstants.lruDefault,
-                CommonConstants.lruDefault, CommonConstants.lruDefault);
+                CommonConstants.lruDefault, CommonConstants.lruDefault, new Dimension(217, 201));
         JButton scaButton = createStyledButton(CommonConstants.scaDefault,
-                CommonConstants.scaDefault, CommonConstants.scaDefault);
+                CommonConstants.scaDefault, CommonConstants.scaDefault, new Dimension(258, 105));
         JButton escaButton = createStyledButton(CommonConstants.escaDefault,
-                CommonConstants.escaDefault, CommonConstants.escaDefault);
+                CommonConstants.escaDefault, CommonConstants.escaDefault, new Dimension(258, 105));
         JButton optButton = createStyledButton(CommonConstants.optDefault,
-                CommonConstants.optDefault, CommonConstants.optDefault);
+                CommonConstants.optDefault, CommonConstants.optDefault, new Dimension(284, 120));
         JButton lfuButton = createStyledButton(CommonConstants.lfuDefault,
-                CommonConstants.lfuDefault, CommonConstants.lfuDefault);
+                CommonConstants.lfuDefault, CommonConstants.lfuDefault, new Dimension(284, 186));
         JButton mfuButton = createStyledButton(CommonConstants.mfuDefault,
-                CommonConstants.mfuDefault, CommonConstants.mfuDefault);
+                CommonConstants.mfuDefault, CommonConstants.mfuDefault, new Dimension(109, 201));
         JButton allButton = createStyledButton(CommonConstants.allDefault,
-                CommonConstants.allDefault, CommonConstants.allDefault);
+                CommonConstants.allDefault, CommonConstants.allDefault, new Dimension(109, 105));
 
         positionButtons(fifoButton, lruButton, scaButton, escaButton, optButton, lfuButton, mfuButton, allButton);
 
@@ -244,6 +229,8 @@ public class App extends JFrame {
         algorithmPanel.add(lfuButton);
         algorithmPanel.add(mfuButton);
         algorithmPanel.add(allButton);
+
+        fifoButton.addActionListener(e -> showFifoSimulationScreen());
 
         mainPanel.add(algorithmPanel, "AlgorithmSelection");
         layout.show(mainPanel, "AlgorithmSelection"); // Show the Algorithm Selection screen
@@ -260,4 +247,11 @@ public class App extends JFrame {
         mfu.setBounds(1110, 350, 109, 201);
         all.setBounds(1110, 561, 109, 105);
     }
+
+    private void showFifoSimulationScreen() {
+        FifoSimulationScreen fifoScreen = new FifoSimulationScreen(layout, mainPanel);
+        mainPanel.add(fifoScreen, "FifoSimulationScreen");
+        layout.show(mainPanel, "FifoSimulationScreen");
+    }
+        
 }
