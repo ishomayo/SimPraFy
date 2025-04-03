@@ -231,10 +231,11 @@ public class App extends JFrame {
         fifoButton.addActionListener(e -> showFifoSimulationScreen());
         lruButton.addActionListener(e -> showLRUSimulationScreen());
         optButton.addActionListener(e -> showOptSimulationScreen());
-        scaButton.addActionListener(e -> showSecondChanceSimulationScreen()); 
+        scaButton.addActionListener(e -> showSecondChanceSimulationScreen());
         lfuButton.addActionListener(e -> showLfuSimulationScreen());
         mfuButton.addActionListener(e -> showMfuSimulationScreen());
         escaButton.addActionListener(e -> showEnhancedSecondChanceSimulationScreen());
+        allButton.addActionListener(e -> showMultiSimulationScreen());
 
         mainPanel.add(algorithmPanel, "AlgorithmSelection");
         layout.show(mainPanel, "AlgorithmSelection"); // Show the Algorithm Selection screen
@@ -252,16 +253,28 @@ public class App extends JFrame {
         all.setBounds(1110, 561, 109, 105);
     }
 
+    private void showMultiSimulationScreen() {
+        refLen = dataInputScreen.getDropdownRefLen();
+        referenceString = dataInputScreen.getTextArea();
+        frameSize = dataInputScreen.getDropdownFrameSize();
+
+        MultiAlgorithmSimulationScreen multiScreen = new MultiAlgorithmSimulationScreen(layout, mainPanel, refLen,
+                referenceString, frameSize);
+        mainPanel.add(multiScreen, "MultiAlgorithmSimulationScreen");
+        layout.show(mainPanel, "MultiAlgorithmSimulationScreen");
+    }
+
     private void showFifoSimulationScreen() {
         refLen = dataInputScreen.getDropdownRefLen();
         referenceString = dataInputScreen.getTextArea();
         frameSize = dataInputScreen.getDropdownFrameSize();
 
-        FifoSimulationScreen fifoScreen = new FifoSimulationScreen(layout, mainPanel, refLen, referenceString, frameSize);
+        FifoSimulationScreen fifoScreen = new FifoSimulationScreen(layout, mainPanel, refLen, referenceString,
+                frameSize);
         mainPanel.add(fifoScreen, "FifoSimulationScreen");
         layout.show(mainPanel, "FifoSimulationScreen");
     }
-    
+
     private void showLRUSimulationScreen() {
         refLen = dataInputScreen.getDropdownRefLen();
         referenceString = dataInputScreen.getTextArea();
@@ -307,7 +320,8 @@ public class App extends JFrame {
         referenceString = dataInputScreen.getTextArea();
         frameSize = dataInputScreen.getDropdownFrameSize();
 
-        SecondChanceSimulationScreen fifoScreen = new SecondChanceSimulationScreen(layout, mainPanel, refLen, referenceString, frameSize);
+        SecondChanceSimulationScreen fifoScreen = new SecondChanceSimulationScreen(layout, mainPanel, refLen,
+                referenceString, frameSize);
         mainPanel.add(fifoScreen, "SecondChanceSimulationScreen");
         layout.show(mainPanel, "SecondChanceSimulationScreen");
     }
@@ -316,8 +330,9 @@ public class App extends JFrame {
         refLen = dataInputScreen.getDropdownRefLen();
         referenceString = dataInputScreen.getTextArea();
         frameSize = dataInputScreen.getDropdownFrameSize();
-        
-        EnhancedSecondChanceSimulationScreen fifoScreen = new EnhancedSecondChanceSimulationScreen(layout, mainPanel, refLen, referenceString, frameSize);
+
+        EnhancedSecondChanceSimulationScreen fifoScreen = new EnhancedSecondChanceSimulationScreen(layout, mainPanel,
+                refLen, referenceString, frameSize);
         mainPanel.add(fifoScreen, "SecondChanceSimulationScreen");
         layout.show(mainPanel, "SecondChanceSimulationScreen");
     }
