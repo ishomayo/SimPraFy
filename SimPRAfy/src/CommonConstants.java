@@ -80,6 +80,18 @@ public class CommonConstants {
     public static final String continueDefault = BASE_PATH + "continue-default.png";
     public static final String continueHover = BASE_PATH + "continue-hover.png";
 
+    public static final String startDefaultSIM = BASE_PATH + "start-simul-default.png";
+    public static final String startHoveSIM = BASE_PATH + "start-simul-hover.png";
+    public static final String startClickSIM = BASE_PATH + "start-simul-clicked.png";
+
+    public static final String stopDefaultSIM = BASE_PATH + "stop-simul-default.png";
+    public static final String stopHoveSIM = BASE_PATH + "stop-simul-hover.png";
+    public static final String stopClickSIM = BASE_PATH + "stop-simul-clicked.png";
+
+    public static final String saveDefaultSIM = BASE_PATH + "save-simul-default.png";
+    public static final String saveHoveSIM = BASE_PATH + "save-simul-hover.png";
+    public static final String saveClickSIM = BASE_PATH + "save-simul-clicked.png";
+
     // Algorithm Buttons
     public static final String fifoDefault = BASE_PATH + "fifo-default.png";
     public static final String lruDefault = BASE_PATH + "lru-default.png";

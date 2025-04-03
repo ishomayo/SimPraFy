@@ -231,6 +231,10 @@ public class App extends JFrame {
         algorithmPanel.add(allButton);
 
         fifoButton.addActionListener(e -> showFifoSimulationScreen());
+        lruButton.addActionListener(e -> showLRUSimulationScreen());
+        optButton.addActionListener(e -> showOptSimulationScreen());
+        scaButton.addActionListener(e -> showSecondChanceSimulationScreen());
+        
 
         mainPanel.add(algorithmPanel, "AlgorithmSelection");
         layout.show(mainPanel, "AlgorithmSelection"); // Show the Algorithm Selection screen
@@ -253,5 +257,23 @@ public class App extends JFrame {
         mainPanel.add(fifoScreen, "FifoSimulationScreen");
         layout.show(mainPanel, "FifoSimulationScreen");
     }
-        
+    
+    private void showLRUSimulationScreen() {
+        LRUSimulationScreen fifoScreen = new LRUSimulationScreen(layout, mainPanel);
+        mainPanel.add(fifoScreen, "LRUSimulationScreen");
+        layout.show(mainPanel, "LRUSimulationScreen");
+    }
+
+    private void showOptSimulationScreen() {
+        OptSimulationScreen fifoScreen = new OptSimulationScreen(layout, mainPanel);
+        mainPanel.add(fifoScreen, "OptSimulationScreen");
+        layout.show(mainPanel, "OptSimulationScreen");
+    }
+
+    private void showSecondChanceSimulationScreen() {
+        SecondChanceSimulationScreen fifoScreen = new SecondChanceSimulationScreen(layout, mainPanel);
+        mainPanel.add(fifoScreen, "SecondChanceSimulationScreen");
+        layout.show(mainPanel, "SecondChanceSimulationScreen");
+    }
+
 }

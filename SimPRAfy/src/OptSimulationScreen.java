@@ -7,10 +7,12 @@ import java.awt.event.MouseAdapter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class FifoSimulationScreen extends JPanel {
+public class OptSimulationScreen extends JPanel {
     private JTextField refInput, frameInput;
     private JPanel gridPanel;
     private JLabel pageFaultLabel, pageHitLabel;
@@ -18,11 +20,11 @@ public class FifoSimulationScreen extends JPanel {
     private Timer timer;
     private int[] referenceString;
     private int frameSize;
-    private Queue<Integer> frames;
+    private List<Integer> frames;
     private int step;
     private JScrollPane scrollPane;
 
-    public FifoSimulationScreen(CardLayout layout, JPanel mainPanel) {
+    public OptSimulationScreen(CardLayout layout, JPanel mainPanel) {
         this.setLayout(null);
         this.setBackground(new Color(2, 13, 25));
         this.setPreferredSize(new Dimension(1500, 844));
@@ -57,7 +59,7 @@ public class FifoSimulationScreen extends JPanel {
         this.add(frameInput);
 
         // Simulation Title
-        JLabel title = new JLabel("FIRST COME FIRST SERVED (FIFO)", SwingConstants.CENTER);
+        JLabel title = new JLabel("OPTIMAL PAGE REPLACEMENT (OPT)", SwingConstants.CENTER);
         title.setFont(new Font("Arial", Font.BOLD, 30));
         title.setForeground(Color.WHITE);
         title.setBounds(0, 80, 1500, 40);
@@ -164,7 +166,7 @@ public class FifoSimulationScreen extends JPanel {
             return;
         }
 
-        frames = new LinkedList<>();
+        frames = new ArrayList<>();
         step = 0;
         gridPanel.removeAll();
 
@@ -202,18 +204,32 @@ public class FifoSimulationScreen extends JPanel {
                     if (isHit) {
                         pageHits++;
                     } else {
+                        pageFaults++;
+                        
+                        // If frames is full, need to find the optimal page to replace
                         if (frames.size() >= frameSize) {
-                            frames.poll();
+                            int replaceIndex = findOptimalReplacement(step);
+                            if (replaceIndex != -1) {
+                                frames.remove(replaceIndex);
+                            } else {
+                                // If no optimal page (all pages will be used), remove first one
+                                frames.remove(0);
+                            }
                         }
                         frames.add(page);
-                        pageFaults++;
                     }
 
-                    for (int storedPage : frames) {
-                        JLabel pageLabel = new JLabel(String.valueOf(storedPage), SwingConstants.CENTER);
+                    // Add pages to display
+                    for (int i = 0; i < frameSize; i++) {
+                        JLabel pageLabel = new JLabel("", SwingConstants.CENTER);
                         pageLabel.setForeground(Color.GREEN);
                         pageLabel.setFont(new Font("Arial", Font.BOLD, 20));
                         pageContainer.add(pageLabel);
+                    }
+                    
+                    // Fill in the current frames
+                    for (int i = 0; i < frames.size(); i++) {
+                        ((JLabel)pageContainer.getComponent(i)).setText(String.valueOf(frames.get(i)));
                     }
 
                     columnPanel.add(pageContainer, BorderLayout.CENTER);
@@ -241,6 +257,40 @@ public class FifoSimulationScreen extends JPanel {
                 } else {
                     timer.stop();
                 }
+            }
+            
+            // Key function for OPT algorithm: find which page should be replaced
+            private int findOptimalReplacement(int currentStep) {
+                // For each page currently in frames, find when it will be used next
+                Map<Integer, Integer> nextUse = new HashMap<>();
+                
+                for (Integer frameValue : frames) {
+                    nextUse.put(frameValue, Integer.MAX_VALUE); // Default to "never used again"
+                    
+                    // Check future references
+                    for (int i = currentStep + 1; i < referenceString.length; i++) {
+                        if (referenceString[i] == frameValue) {
+                            nextUse.put(frameValue, i);
+                            break;
+                        }
+                    }
+                }
+                
+                // Find the page that will not be used for the longest time
+                int furthestPage = -1;
+                int furthestDistance = -1;
+                
+                for (int i = 0; i < frames.size(); i++) {
+                    int pageValue = frames.get(i);
+                    int nextUseTime = nextUse.get(pageValue);
+                    
+                    if (nextUseTime > furthestDistance) {
+                        furthestDistance = nextUseTime;
+                        furthestPage = i;
+                    }
+                }
+                
+                return furthestPage;
             }
         });
 

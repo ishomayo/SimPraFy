@@ -7,10 +7,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
-public class FifoSimulationScreen extends JPanel {
+public class LRUSimulationScreen extends JPanel {
     private JTextField refInput, frameInput;
     private JPanel gridPanel;
     private JLabel pageFaultLabel, pageHitLabel;
@@ -18,11 +18,11 @@ public class FifoSimulationScreen extends JPanel {
     private Timer timer;
     private int[] referenceString;
     private int frameSize;
-    private Queue<Integer> frames;
+    private Map<Integer, Integer> frames; // LinkedHashMap to track access order
     private int step;
     private JScrollPane scrollPane;
 
-    public FifoSimulationScreen(CardLayout layout, JPanel mainPanel) {
+    public LRUSimulationScreen(CardLayout layout, JPanel mainPanel) {
         this.setLayout(null);
         this.setBackground(new Color(2, 13, 25));
         this.setPreferredSize(new Dimension(1500, 844));
@@ -57,7 +57,7 @@ public class FifoSimulationScreen extends JPanel {
         this.add(frameInput);
 
         // Simulation Title
-        JLabel title = new JLabel("FIRST COME FIRST SERVED (FIFO)", SwingConstants.CENTER);
+        JLabel title = new JLabel("LEAST RECENTLY USED (LRU)", SwingConstants.CENTER);
         title.setFont(new Font("Arial", Font.BOLD, 30));
         title.setForeground(Color.WHITE);
         title.setBounds(0, 80, 1500, 40);
@@ -164,7 +164,15 @@ public class FifoSimulationScreen extends JPanel {
             return;
         }
 
-        frames = new LinkedList<>();
+        // Initialize LRU frames using LinkedHashMap
+        // The accessOrder=true parameter makes it an LRU cache
+        frames = new LinkedHashMap<Integer, Integer>(frameSize, 0.75f, true) {
+            @Override
+            protected boolean removeEldestEntry(Map.Entry<Integer, Integer> eldest) {
+                return size() > frameSize;
+            }
+        };
+        
         step = 0;
         gridPanel.removeAll();
 
@@ -194,7 +202,8 @@ public class FifoSimulationScreen extends JPanel {
                     JPanel pageContainer = new JPanel(new GridLayout(frameSize, 1));
                     pageContainer.setBackground(new Color(30, 30, 30));
 
-                    boolean isHit = frames.contains(page);
+                    // Check if page is in frames (hit)
+                    boolean isHit = frames.containsKey(page);
                     JLabel statusLabel = new JLabel(isHit ? "Hit" : "Miss", SwingConstants.CENTER);
                     statusLabel.setFont(new Font("Arial", Font.BOLD, 16));
                     statusLabel.setForeground(isHit ? Color.GREEN : Color.RED);
@@ -202,18 +211,25 @@ public class FifoSimulationScreen extends JPanel {
                     if (isHit) {
                         pageHits++;
                     } else {
-                        if (frames.size() >= frameSize) {
-                            frames.poll();
-                        }
-                        frames.add(page);
                         pageFaults++;
                     }
-
-                    for (int storedPage : frames) {
-                        JLabel pageLabel = new JLabel(String.valueOf(storedPage), SwingConstants.CENTER);
+                    
+                    // Update the LRU cache - key operation that makes LinkedHashMap work as LRU
+                    frames.put(page, page); // This will reorder or add the page
+                    
+                    // Add all pages from the frames map to the UI
+                    for (int i = 0; i < frameSize; i++) {
+                        JLabel pageLabel = new JLabel("", SwingConstants.CENTER);
                         pageLabel.setForeground(Color.GREEN);
                         pageLabel.setFont(new Font("Arial", Font.BOLD, 20));
                         pageContainer.add(pageLabel);
+                    }
+                    
+                    // Fill in the frames from most recent to least recent
+                    int index = 0;
+                    for (Integer storedPage : frames.keySet()) {
+                        ((JLabel)pageContainer.getComponent(index)).setText(String.valueOf(storedPage));
+                        index++;
                     }
 
                     columnPanel.add(pageContainer, BorderLayout.CENTER);
