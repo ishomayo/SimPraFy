@@ -24,10 +24,16 @@ public class OptSimulationScreen extends JPanel {
     private int step;
     private JScrollPane scrollPane;
 
-    public OptSimulationScreen(CardLayout layout, JPanel mainPanel) {
+    private String referenceStringInput;
+
+    public OptSimulationScreen(CardLayout layout, JPanel mainPanel, int refLen, String referenceStringInput,
+            int frameSize) {
         this.setLayout(null);
         this.setBackground(new Color(2, 13, 25));
         this.setPreferredSize(new Dimension(1500, 844));
+
+        this.referenceStringInput = referenceStringInput;
+        this.frameSize = frameSize;
 
         // Back Button
         JButton backButton = createStyledButton(CommonConstants.backDefault,
@@ -43,6 +49,7 @@ public class OptSimulationScreen extends JPanel {
         refLabel.setFont(new Font("Arial", Font.BOLD, 15));
         this.add(refLabel);
         refInput = new JTextField();
+        refInput.setText(referenceStringInput);
         refInput.setBorder(BorderFactory.createLineBorder(Color.GREEN, 1));
         refInput.setBounds(300, 30, 800, 30);
         this.add(refInput);
@@ -54,6 +61,7 @@ public class OptSimulationScreen extends JPanel {
         frameLabel.setFont(new Font("Arial", Font.BOLD, 15));
         this.add(frameLabel);
         frameInput = new JTextField();
+        frameInput.setText(String.valueOf(frameSize));
         frameInput.setBounds(1225, 30, 50, 30);
         frameInput.setBorder(BorderFactory.createLineBorder(Color.GREEN, 1));
         this.add(frameInput);
@@ -149,11 +157,11 @@ public class OptSimulationScreen extends JPanel {
         saveButton.setBounds(1130, 675, 250, 75);
         this.add(saveButton);
 
-        startButton.addActionListener(e -> startSimulation());
+        startButton.addActionListener(e -> startSimulation(saveButton));
         stopButton.addActionListener(e -> stopSimulation());
     }
 
-    private void startSimulation() {
+    private void startSimulation(JButton saveButton) {
         try {
             String[] refStrArr = refInput.getText().trim().split(" ");
             referenceString = new int[refStrArr.length];
@@ -205,7 +213,7 @@ public class OptSimulationScreen extends JPanel {
                         pageHits++;
                     } else {
                         pageFaults++;
-                        
+
                         // If frames is full, need to find the optimal page to replace
                         if (frames.size() >= frameSize) {
                             int replaceIndex = findOptimalReplacement(step);
@@ -226,10 +234,10 @@ public class OptSimulationScreen extends JPanel {
                         pageLabel.setFont(new Font("Arial", Font.BOLD, 20));
                         pageContainer.add(pageLabel);
                     }
-                    
+
                     // Fill in the current frames
                     for (int i = 0; i < frames.size(); i++) {
-                        ((JLabel)pageContainer.getComponent(i)).setText(String.valueOf(frames.get(i)));
+                        ((JLabel) pageContainer.getComponent(i)).setText(String.valueOf(frames.get(i)));
                     }
 
                     columnPanel.add(pageContainer, BorderLayout.CENTER);
@@ -258,15 +266,15 @@ public class OptSimulationScreen extends JPanel {
                     timer.stop();
                 }
             }
-            
+
             // Key function for OPT algorithm: find which page should be replaced
             private int findOptimalReplacement(int currentStep) {
                 // For each page currently in frames, find when it will be used next
                 Map<Integer, Integer> nextUse = new HashMap<>();
-                
+
                 for (Integer frameValue : frames) {
                     nextUse.put(frameValue, Integer.MAX_VALUE); // Default to "never used again"
-                    
+
                     // Check future references
                     for (int i = currentStep + 1; i < referenceString.length; i++) {
                         if (referenceString[i] == frameValue) {
@@ -275,26 +283,62 @@ public class OptSimulationScreen extends JPanel {
                         }
                     }
                 }
-                
+
                 // Find the page that will not be used for the longest time
                 int furthestPage = -1;
                 int furthestDistance = -1;
-                
+
                 for (int i = 0; i < frames.size(); i++) {
                     int pageValue = frames.get(i);
                     int nextUseTime = nextUse.get(pageValue);
-                    
+
                     if (nextUseTime > furthestDistance) {
                         furthestDistance = nextUseTime;
                         furthestPage = i;
                     }
                 }
-                
+
                 return furthestPage;
             }
         });
 
         timer.start();
+
+        saveButton.setEnabled(true);
+
+        saveButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Object[] choices = { "PNG", "PDF", "CANCEL" };
+                Object selected = JOptionPane.showOptionDialog(null, "Select format to save.", "Save",
+                        JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, choices, choices[0]);
+
+                if ((int) selected != 2) {
+                    String option = "PNG";
+                    if ((int) selected == 1)
+                        option = "PDF";
+                    // visualPanel.setIsSaving(true);
+                    boolean ok = saveOutput(gridPanel, option);
+                    // visualPanel.setIsSaving(false);
+                    if (ok)
+                        JOptionPane.showMessageDialog(null, "Saved successfully.", "Save",
+                                JOptionPane.INFORMATION_MESSAGE);
+                    else
+                        JOptionPane.showMessageDialog(null, "Cannot save at the moment.", "Save",
+                                JOptionPane.WARNING_MESSAGE);
+                }
+            }
+        });
+    }
+
+    public boolean saveOutput(javax.swing.JPanel panel, String extension) {
+        ImageSaver is = new ImageSaver(panel);
+        if (extension.equals("PNG"))
+            is.saveAsImage();
+        else
+            is.saveAsPDF();
+        if (is.getHasError())
+            return false;
+        return true;
     }
 
     private void stopSimulation() {

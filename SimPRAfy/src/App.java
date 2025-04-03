@@ -262,33 +262,53 @@ public class App extends JFrame {
     }
     
     private void showLRUSimulationScreen() {
-        LRUSimulationScreen fifoScreen = new LRUSimulationScreen(layout, mainPanel);
+        refLen = dataInputScreen.getDropdownRefLen();
+        referenceString = dataInputScreen.getTextArea();
+        frameSize = dataInputScreen.getDropdownFrameSize();
+
+        LRUSimulationScreen fifoScreen = new LRUSimulationScreen(layout, mainPanel, refLen, referenceString, frameSize);
         mainPanel.add(fifoScreen, "LRUSimulationScreen");
         layout.show(mainPanel, "LRUSimulationScreen");
     }
 
     private void showOptSimulationScreen() {
-        OptSimulationScreen fifoScreen = new OptSimulationScreen(layout, mainPanel);
+        refLen = dataInputScreen.getDropdownRefLen();
+        referenceString = dataInputScreen.getTextArea();
+        frameSize = dataInputScreen.getDropdownFrameSize();
+
+        OptSimulationScreen fifoScreen = new OptSimulationScreen(layout, mainPanel, refLen, referenceString, frameSize);
         mainPanel.add(fifoScreen, "OptSimulationScreen");
         layout.show(mainPanel, "OptSimulationScreen");
     }
 
-    private void showSecondChanceSimulationScreen() {
-        SecondChanceSimulationScreen fifoScreen = new SecondChanceSimulationScreen(layout, mainPanel);
-        mainPanel.add(fifoScreen, "SecondChanceSimulationScreen");
-        layout.show(mainPanel, "SecondChanceSimulationScreen");
-    }
-
     private void showLfuSimulationScreen() {
-        LfuSimulationScreen fifoScreen = new LfuSimulationScreen(layout, mainPanel);
+        refLen = dataInputScreen.getDropdownRefLen();
+        referenceString = dataInputScreen.getTextArea();
+        frameSize = dataInputScreen.getDropdownFrameSize();
+
+        LfuSimulationScreen fifoScreen = new LfuSimulationScreen(layout, mainPanel, refLen, referenceString, frameSize);
         mainPanel.add(fifoScreen, "LfuSimulationScreen");
         layout.show(mainPanel, "LfuSimulationScreen");
     }
 
     private void showMfuSimulationScreen() {
-        MfuSimulationScreen fifoScreen = new MfuSimulationScreen(layout, mainPanel);
+        refLen = dataInputScreen.getDropdownRefLen();
+        referenceString = dataInputScreen.getTextArea();
+        frameSize = dataInputScreen.getDropdownFrameSize();
+
+        MfuSimulationScreen fifoScreen = new MfuSimulationScreen(layout, mainPanel, refLen, referenceString, frameSize);
         mainPanel.add(fifoScreen, "MfuSimulationScreen");
         layout.show(mainPanel, "MfuSimulationScreen");
+    }
+
+    private void showSecondChanceSimulationScreen() {
+        refLen = dataInputScreen.getDropdownRefLen();
+        referenceString = dataInputScreen.getTextArea();
+        frameSize = dataInputScreen.getDropdownFrameSize();
+        
+        SecondChanceSimulationScreen fifoScreen = new SecondChanceSimulationScreen(layout, mainPanel, refLen, referenceString, frameSize);
+        mainPanel.add(fifoScreen, "SecondChanceSimulationScreen");
+        layout.show(mainPanel, "SecondChanceSimulationScreen");
     }
 
 }

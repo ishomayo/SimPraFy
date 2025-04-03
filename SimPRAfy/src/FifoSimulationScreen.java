@@ -162,16 +162,6 @@ public class FifoSimulationScreen extends JPanel {
         stopButton.addActionListener(e -> stopSimulation());
     }
 
-    // Setter for Reference String Input
-    public void setReferenceStringInput(String referenceString) {
-        this.refInput.setText(referenceString);
-    }
-
-    // Setter for Frame Size Input
-    public void setFrameSizeInput(String frameSize) {
-        this.frameInput.setText(frameSize);
-    }
-
     private void startSimulation(JButton saveButton) {
         System.out.println(referenceStringInput);
         try {

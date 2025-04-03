@@ -22,10 +22,16 @@ public class LRUSimulationScreen extends JPanel {
     private int step;
     private JScrollPane scrollPane;
 
-    public LRUSimulationScreen(CardLayout layout, JPanel mainPanel) {
+    private String referenceStringInput;
+
+    public LRUSimulationScreen(CardLayout layout, JPanel mainPanel, int refLen, String referenceStringInput,
+            int frameSize) {
         this.setLayout(null);
         this.setBackground(new Color(2, 13, 25));
         this.setPreferredSize(new Dimension(1500, 844));
+
+        this.referenceStringInput = referenceStringInput;
+        this.frameSize = frameSize;
 
         // Back Button
         JButton backButton = createStyledButton(CommonConstants.backDefault,
@@ -41,6 +47,7 @@ public class LRUSimulationScreen extends JPanel {
         refLabel.setFont(new Font("Arial", Font.BOLD, 15));
         this.add(refLabel);
         refInput = new JTextField();
+        refInput.setText(referenceStringInput);
         refInput.setBorder(BorderFactory.createLineBorder(Color.GREEN, 1));
         refInput.setBounds(300, 30, 800, 30);
         this.add(refInput);
@@ -52,6 +59,7 @@ public class LRUSimulationScreen extends JPanel {
         frameLabel.setFont(new Font("Arial", Font.BOLD, 15));
         this.add(frameLabel);
         frameInput = new JTextField();
+        frameInput.setText(String.valueOf(frameSize));
         frameInput.setBounds(1225, 30, 50, 30);
         frameInput.setBorder(BorderFactory.createLineBorder(Color.GREEN, 1));
         this.add(frameInput);
@@ -147,11 +155,11 @@ public class LRUSimulationScreen extends JPanel {
         saveButton.setBounds(1130, 675, 250, 75);
         this.add(saveButton);
 
-        startButton.addActionListener(e -> startSimulation());
+        startButton.addActionListener(e -> startSimulation(saveButton));
         stopButton.addActionListener(e -> stopSimulation());
     }
 
-    private void startSimulation() {
+    private void startSimulation(JButton saveButton) {
         try {
             String[] refStrArr = refInput.getText().trim().split(" ");
             referenceString = new int[refStrArr.length];
@@ -172,7 +180,7 @@ public class LRUSimulationScreen extends JPanel {
                 return size() > frameSize;
             }
         };
-        
+
         step = 0;
         gridPanel.removeAll();
 
@@ -213,10 +221,10 @@ public class LRUSimulationScreen extends JPanel {
                     } else {
                         pageFaults++;
                     }
-                    
+
                     // Update the LRU cache - key operation that makes LinkedHashMap work as LRU
                     frames.put(page, page); // This will reorder or add the page
-                    
+
                     // Add all pages from the frames map to the UI
                     for (int i = 0; i < frameSize; i++) {
                         JLabel pageLabel = new JLabel("", SwingConstants.CENTER);
@@ -224,11 +232,11 @@ public class LRUSimulationScreen extends JPanel {
                         pageLabel.setFont(new Font("Arial", Font.BOLD, 20));
                         pageContainer.add(pageLabel);
                     }
-                    
+
                     // Fill in the frames from most recent to least recent
                     int index = 0;
                     for (Integer storedPage : frames.keySet()) {
-                        ((JLabel)pageContainer.getComponent(index)).setText(String.valueOf(storedPage));
+                        ((JLabel) pageContainer.getComponent(index)).setText(String.valueOf(storedPage));
                         index++;
                     }
 
@@ -261,12 +269,48 @@ public class LRUSimulationScreen extends JPanel {
         });
 
         timer.start();
+
+        saveButton.setEnabled(true);
+
+        saveButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Object[] choices = { "PNG", "PDF", "CANCEL" };
+                Object selected = JOptionPane.showOptionDialog(null, "Select format to save.", "Save",
+                        JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, choices, choices[0]);
+
+                if ((int) selected != 2) {
+                    String option = "PNG";
+                    if ((int) selected == 1)
+                        option = "PDF";
+                    // visualPanel.setIsSaving(true);
+                    boolean ok = saveOutput(gridPanel, option);
+                    // visualPanel.setIsSaving(false);
+                    if (ok)
+                        JOptionPane.showMessageDialog(null, "Saved successfully.", "Save",
+                                JOptionPane.INFORMATION_MESSAGE);
+                    else
+                        JOptionPane.showMessageDialog(null, "Cannot save at the moment.", "Save",
+                                JOptionPane.WARNING_MESSAGE);
+                }
+            }
+        });
     }
 
     private void stopSimulation() {
         if (timer != null) {
             timer.stop();
         }
+    }
+
+    public boolean saveOutput(javax.swing.JPanel panel, String extension) {
+        ImageSaver is = new ImageSaver(panel);
+        if (extension.equals("PNG"))
+            is.saveAsImage();
+        else
+            is.saveAsPDF();
+        if (is.getHasError())
+            return false;
+        return true;
     }
 
     // Helper method for button styling

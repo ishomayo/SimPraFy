@@ -18,15 +18,21 @@ public class LfuSimulationScreen extends JPanel {
     private int[] referenceString;
     private int frameSize;
     private Map<Integer, Integer> frameFrequency; // Page -> Frequency count
-    private Map<Integer, Integer> frameTime;      // Page -> Time of last access
-    private List<Integer> frameList;              // Current frames in order
+    private Map<Integer, Integer> frameTime; // Page -> Time of last access
+    private List<Integer> frameList; // Current frames in order
     private int step;
     private JScrollPane scrollPane;
 
-    public LfuSimulationScreen(CardLayout layout, JPanel mainPanel) {
+    private String referenceStringInput;
+
+    public LfuSimulationScreen(CardLayout layout, JPanel mainPanel, int refLen, String referenceStringInput,
+            int frameSize) {
         this.setLayout(null);
         this.setBackground(new Color(2, 13, 25));
         this.setPreferredSize(new Dimension(1500, 844));
+
+        this.referenceStringInput = referenceStringInput;
+        this.frameSize = frameSize;
 
         // Back Button
         JButton backButton = createStyledButton(CommonConstants.backDefault,
@@ -42,6 +48,7 @@ public class LfuSimulationScreen extends JPanel {
         refLabel.setFont(new Font("Arial", Font.BOLD, 15));
         this.add(refLabel);
         refInput = new JTextField();
+        refInput.setText(referenceStringInput);
         refInput.setBorder(BorderFactory.createLineBorder(Color.GREEN, 1));
         refInput.setBounds(300, 30, 800, 30);
         this.add(refInput);
@@ -53,6 +60,7 @@ public class LfuSimulationScreen extends JPanel {
         frameLabel.setFont(new Font("Arial", Font.BOLD, 15));
         this.add(frameLabel);
         frameInput = new JTextField();
+        frameInput.setText(String.valueOf(frameSize));
         frameInput.setBounds(1225, 30, 50, 30);
         frameInput.setBorder(BorderFactory.createLineBorder(Color.GREEN, 1));
         this.add(frameInput);
@@ -148,11 +156,11 @@ public class LfuSimulationScreen extends JPanel {
         saveButton.setBounds(1130, 675, 250, 75);
         this.add(saveButton);
 
-        startButton.addActionListener(e -> startSimulation());
+        startButton.addActionListener(e -> startSimulation(saveButton));
         stopButton.addActionListener(e -> stopSimulation());
     }
 
-    private void startSimulation() {
+    private void startSimulation(JButton saveButton) {
         try {
             String[] refStrArr = refInput.getText().trim().split(" ");
             referenceString = new int[refStrArr.length];
@@ -215,7 +223,7 @@ public class LfuSimulationScreen extends JPanel {
                         pageHits++;
                     } else {
                         pageFaults++;
-                        
+
                         if (frameList.size() < frameSize) {
                             // Add the new page if we have space
                             frameList.add(page);
@@ -225,11 +233,11 @@ public class LfuSimulationScreen extends JPanel {
                             // Find the least frequently used page
                             int minFrequency = Integer.MAX_VALUE;
                             List<Integer> leastFrequentPages = new ArrayList<>();
-                            
+
                             // Find all pages with minimum frequency
                             for (int currentPage : frameList) {
                                 int frequency = frameFrequency.get(currentPage);
-                                
+
                                 if (frequency < minFrequency) {
                                     minFrequency = frequency;
                                     leastFrequentPages.clear();
@@ -238,13 +246,13 @@ public class LfuSimulationScreen extends JPanel {
                                     leastFrequentPages.add(currentPage);
                                 }
                             }
-                            
+
                             // If multiple pages have the same frequency, find the least recently used
                             int pageToRemove;
                             if (leastFrequentPages.size() > 1) {
                                 int oldestTime = Integer.MAX_VALUE;
                                 pageToRemove = leastFrequentPages.get(0);
-                                
+
                                 for (int candidate : leastFrequentPages) {
                                     if (frameTime.get(candidate) < oldestTime) {
                                         oldestTime = frameTime.get(candidate);
@@ -254,12 +262,12 @@ public class LfuSimulationScreen extends JPanel {
                             } else {
                                 pageToRemove = leastFrequentPages.get(0);
                             }
-                            
+
                             // Remove the victim page
                             frameList.remove(Integer.valueOf(pageToRemove));
                             frameFrequency.remove(pageToRemove);
                             frameTime.remove(pageToRemove);
-                            
+
                             // Add the new page
                             frameList.add(page);
                             frameFrequency.put(page, 1);
@@ -316,6 +324,42 @@ public class LfuSimulationScreen extends JPanel {
         });
 
         timer.start();
+
+        saveButton.setEnabled(true);
+
+        saveButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Object[] choices = { "PNG", "PDF", "CANCEL" };
+                Object selected = JOptionPane.showOptionDialog(null, "Select format to save.", "Save",
+                        JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, choices, choices[0]);
+
+                if ((int) selected != 2) {
+                    String option = "PNG";
+                    if ((int) selected == 1)
+                        option = "PDF";
+                    // visualPanel.setIsSaving(true);
+                    boolean ok = saveOutput(gridPanel, option);
+                    // visualPanel.setIsSaving(false);
+                    if (ok)
+                        JOptionPane.showMessageDialog(null, "Saved successfully.", "Save",
+                                JOptionPane.INFORMATION_MESSAGE);
+                    else
+                        JOptionPane.showMessageDialog(null, "Cannot save at the moment.", "Save",
+                                JOptionPane.WARNING_MESSAGE);
+                }
+            }
+        });
+    }
+
+    public boolean saveOutput(javax.swing.JPanel panel, String extension) {
+        ImageSaver is = new ImageSaver(panel);
+        if (extension.equals("PNG"))
+            is.saveAsImage();
+        else
+            is.saveAsPDF();
+        if (is.getHasError())
+            return false;
+        return true;
     }
 
     private void stopSimulation() {
