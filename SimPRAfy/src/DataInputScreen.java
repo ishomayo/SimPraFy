@@ -536,16 +536,19 @@ public class DataInputScreen extends JPanel {
         dropdownFrameSize.setSelectedItem(frameSize);
     }
 
-    public JComboBox<Integer> getDropdownRefLen() {
-        return dropdownRefLen;
+    public Integer getDropdownRefLen() {
+        System.out.println(dropdownRefLen.getSelectedItem());
+        return (Integer) dropdownRefLen.getSelectedItem();
     }
 
-    public JTextArea getTextArea() {
-        return textArea;
+    public String getTextArea() {
+        System.out.println(textArea.getText());
+        return textArea.getText();
     }
 
-    public JComboBox<Integer> getDropdownFrameSize() {
-        return dropdownFrameSize;
+    public Integer getDropdownFrameSize() {
+        System.out.println(dropdownFrameSize.getSelectedItem());
+        return (Integer) dropdownFrameSize.getSelectedItem();
     }
     
     private JButton createStyledButton(String defaultImg, String hoverImg, String clickImg, int width, int height) {

@@ -182,6 +182,9 @@ public class App extends JFrame {
     }
 
     public void selectAlgorithmScreen() {
+        dataInputScreen.getDropdownRefLen();
+        dataInputScreen.getTextArea();
+        dataInputScreen.getDropdownFrameSize();
         ImageIcon backgroundImage = new ImageIcon(CommonConstants.selectAlgoBG);
 
         JPanel algorithmPanel = new JPanel(null) {
@@ -233,8 +236,9 @@ public class App extends JFrame {
         fifoButton.addActionListener(e -> showFifoSimulationScreen());
         lruButton.addActionListener(e -> showLRUSimulationScreen());
         optButton.addActionListener(e -> showOptSimulationScreen());
-        scaButton.addActionListener(e -> showSecondChanceSimulationScreen());
-        
+        scaButton.addActionListener(e -> showSecondChanceSimulationScreen()); 
+        lfuButton.addActionListener(e -> showLfuSimulationScreen());
+        mfuButton.addActionListener(e -> showMfuSimulationScreen());
 
         mainPanel.add(algorithmPanel, "AlgorithmSelection");
         layout.show(mainPanel, "AlgorithmSelection"); // Show the Algorithm Selection screen
@@ -274,6 +278,18 @@ public class App extends JFrame {
         SecondChanceSimulationScreen fifoScreen = new SecondChanceSimulationScreen(layout, mainPanel);
         mainPanel.add(fifoScreen, "SecondChanceSimulationScreen");
         layout.show(mainPanel, "SecondChanceSimulationScreen");
+    }
+
+    private void showLfuSimulationScreen() {
+        LfuSimulationScreen fifoScreen = new LfuSimulationScreen(layout, mainPanel);
+        mainPanel.add(fifoScreen, "LfuSimulationScreen");
+        layout.show(mainPanel, "LfuSimulationScreen");
+    }
+
+    private void showMfuSimulationScreen() {
+        MfuSimulationScreen fifoScreen = new MfuSimulationScreen(layout, mainPanel);
+        mainPanel.add(fifoScreen, "MfuSimulationScreen");
+        layout.show(mainPanel, "MfuSimulationScreen");
     }
 
 }
