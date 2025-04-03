@@ -234,6 +234,7 @@ public class App extends JFrame {
         scaButton.addActionListener(e -> showSecondChanceSimulationScreen()); 
         lfuButton.addActionListener(e -> showLfuSimulationScreen());
         mfuButton.addActionListener(e -> showMfuSimulationScreen());
+        escaButton.addActionListener(e -> showEnhancedSecondChanceSimulationScreen());
 
         mainPanel.add(algorithmPanel, "AlgorithmSelection");
         layout.show(mainPanel, "AlgorithmSelection"); // Show the Algorithm Selection screen
@@ -305,8 +306,18 @@ public class App extends JFrame {
         refLen = dataInputScreen.getDropdownRefLen();
         referenceString = dataInputScreen.getTextArea();
         frameSize = dataInputScreen.getDropdownFrameSize();
-        
+
         SecondChanceSimulationScreen fifoScreen = new SecondChanceSimulationScreen(layout, mainPanel, refLen, referenceString, frameSize);
+        mainPanel.add(fifoScreen, "SecondChanceSimulationScreen");
+        layout.show(mainPanel, "SecondChanceSimulationScreen");
+    }
+
+    private void showEnhancedSecondChanceSimulationScreen() {
+        refLen = dataInputScreen.getDropdownRefLen();
+        referenceString = dataInputScreen.getTextArea();
+        frameSize = dataInputScreen.getDropdownFrameSize();
+        
+        EnhancedSecondChanceSimulationScreen fifoScreen = new EnhancedSecondChanceSimulationScreen(layout, mainPanel, refLen, referenceString, frameSize);
         mainPanel.add(fifoScreen, "SecondChanceSimulationScreen");
         layout.show(mainPanel, "SecondChanceSimulationScreen");
     }
