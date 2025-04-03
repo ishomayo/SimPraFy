@@ -152,7 +152,7 @@ public class MultiAlgorithmSimulationScreen extends JPanel {
     private void initializeAlgorithmPanels() {
         // Create and add algorithm panels with correct names and short codes
         String[] algorithmNames = {
-                "FIFO", "LRU", "OPT", "SC", "ESC", "LFU", "MFU"
+                "FIRST IN FIRST OUT", "LEAST RECENTLY USED", "OPTIMAL", "SECOND CHANCE", "ENHANCED SECOND CHANCE", "LEAST FREQUENTLY USED", "MOST FREQUENTLY USED"
         };
 
         String[] displayNames = {
