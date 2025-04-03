@@ -20,7 +20,6 @@ public class SecondChanceSimulationScreen extends JPanel {
     private int step;
     private int clockHand;
     private JScrollPane scrollPane;
-    private ImageSaver imageSaver;
 
     private String referenceStringInput;
 
@@ -47,7 +46,7 @@ public class SecondChanceSimulationScreen extends JPanel {
 
         // Back Button
         JButton backButton = createStyledButton(CommonConstants.backDefault,
-                CommonConstants.backClick, CommonConstants.backClick, new Dimension(50, 50));
+                CommonConstants.backClick2, CommonConstants.backClick2, new Dimension(50, 50));
         backButton.setBounds(20, 20, 50, 50);
         this.add(backButton);
         backButton.addActionListener(e -> layout.show(mainPanel, "AlgorithmSelection"));
@@ -155,15 +154,15 @@ public class SecondChanceSimulationScreen extends JPanel {
 
         // Control Buttons
         JButton startButton = createStyledButton(CommonConstants.startDefaultSIM,
-                CommonConstants.startHoveSIM, CommonConstants.startClickSIM, new Dimension(250, 75));
+                CommonConstants.startHoverSIM, CommonConstants.startClickSIM, new Dimension(250, 75));
         startButton.setBounds(610, 675, 250, 75);
         this.add(startButton);
         JButton stopButton = createStyledButton(CommonConstants.stopDefaultSIM,
-                CommonConstants.stopHoveSIM, CommonConstants.stopClickSIM, new Dimension(250, 75));
+                CommonConstants.stopHoverSIM, CommonConstants.stopClickSIM, new Dimension(250, 75));
         stopButton.setBounds(870, 675, 250, 75);
         this.add(stopButton);
         JButton saveButton = createStyledButton(CommonConstants.saveDefaultSIM,
-                CommonConstants.saveHoveSIM, CommonConstants.saveClickSIM, new Dimension(250, 75));
+                CommonConstants.saveHoverSIM, CommonConstants.saveClickSIM, new Dimension(250, 75));
         saveButton.setBounds(1130, 675, 250, 75);
         saveButton.setEnabled(false);
         this.add(saveButton);

@@ -43,13 +43,14 @@ public class CommonConstants {
 
     // File paths using the determined BASE_PATH
     public static final String splashScreen = BASE_PATH + "SplashScreen.jpg";
-    public static final String lobbyBG = BASE_PATH + "LobbyBackground.jpg";
-    public static final String inputMethod = BASE_PATH + "SelectionBackground.jpg";
+    public static final String lobbyBG = BASE_PATH + "LobbyBackground.png";
+    public static final String inputMethod = BASE_PATH + "inputSelectionBackground.png";
     public static final String selectAlgoBG = BASE_PATH + "SelectAlgorithmBackground.png";
     public static final String box = BASE_PATH + "Box.png";
 
     // Screens
     public static final String credits = BASE_PATH + "Credits.png";
+    public static final String help = BASE_PATH + "Help.png";
 
     // Lobby Buttons
     public static final String startDefault = BASE_PATH + "start-default.png";
@@ -66,6 +67,7 @@ public class CommonConstants {
     public static final String exitClick = BASE_PATH + "exit-click.png";
     public static final String backDefault = BASE_PATH + "back.png";
     public static final String backClick = BASE_PATH + "back-click.png";
+    public static final String backClick2 = BASE_PATH + "back-click2.png";
 
     // Input Method Buttons
     public static final String randomDefault = BASE_PATH + "random-default.png";
@@ -92,26 +94,49 @@ public class CommonConstants {
     public static final String continueHover = BASE_PATH + "continue-hover.png";
 
     public static final String startDefaultSIM = BASE_PATH + "start-simul-default.png";
-    public static final String startHoveSIM = BASE_PATH + "start-simul-hover.png";
+    public static final String startHoverSIM = BASE_PATH + "start-simul-hover.png";
     public static final String startClickSIM = BASE_PATH + "start-simul-clicked.png";
 
     public static final String stopDefaultSIM = BASE_PATH + "stop-simul-default.png";
-    public static final String stopHoveSIM = BASE_PATH + "stop-simul-hover.png";
+    public static final String stopHoverSIM = BASE_PATH + "stop-simul-hover.png";
     public static final String stopClickSIM = BASE_PATH + "stop-simul-clicked.png";
 
     public static final String saveDefaultSIM = BASE_PATH + "save-simul-default.png";
-    public static final String saveHoveSIM = BASE_PATH + "save-simul-hover.png";
+    public static final String saveHoverSIM = BASE_PATH + "save-simul-hover.png";
     public static final String saveClickSIM = BASE_PATH + "save-simul-clicked.png";
 
     // Algorithm Buttons
     public static final String fifoDefault = BASE_PATH + "fifo-default.png";
+    public static final String fifoHover = BASE_PATH + "fifo-hover.png";
+    public static final String fifoClick = BASE_PATH + "fifo-click.png";
+
     public static final String lruDefault = BASE_PATH + "lru-default.png";
+    public static final String lruHover = BASE_PATH + "lru-hover.png";
+    public static final String lruClick = BASE_PATH + "lru-click.png";
+
     public static final String escaDefault = BASE_PATH + "esca-default.png";
+    public static final String escaHover = BASE_PATH + "esca-hover.png";
+    public static final String escaClick = BASE_PATH + "esca-click.png";
+
     public static final String scaDefault = BASE_PATH + "sca-default.png";
+    public static final String scaHover = BASE_PATH + "sca-hover.png";
+    public static final String scaClick = BASE_PATH + "sca-click.png";
+
     public static final String allDefault = BASE_PATH + "all-default.png";
+    public static final String allHover = BASE_PATH + "all-hover.png";
+    public static final String allClick = BASE_PATH + "all-click.png";
+
     public static final String mfuDefault = BASE_PATH + "mfu-default.png";
+    public static final String mfuHover = BASE_PATH + "mfu-hover.png";
+    public static final String mfuClick = BASE_PATH + "mfu-click.png";
+
     public static final String lfuDefault = BASE_PATH + "lfu-default.png";
-    public static final String optDefault = BASE_PATH + "opt-default.png";
+    public static final String lfuHover = BASE_PATH + "lfu-hover.png";
+    public static final String lfuClick = BASE_PATH + "lfu-click.png";
+
+    public static final String optDefault = BASE_PATH + "opr-default.png";
+    public static final String optHover = BASE_PATH + "opr-hover.png";
+    public static final String optClick = BASE_PATH + "opr-click.png";
 
     // Utility method to load images properly
     public static Image loadImage(String path) {

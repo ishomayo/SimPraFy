@@ -59,6 +59,7 @@ public class App extends JFrame {
 
         Lobby(); // Call Lobby to add the panel
         infoScreens.showCredits();
+        infoScreens.showHelp();
 
         layout.show(mainPanel, "Lobby");
     }
@@ -195,27 +196,27 @@ public class App extends JFrame {
         this.setLayout(null);
 
         JButton backButton = createStyledButton(CommonConstants.backDefault,
-                CommonConstants.backClick, CommonConstants.backClick, new Dimension(50, 50));
+                CommonConstants.backClick2, CommonConstants.backClick2, new Dimension(50, 50));
         backButton.setBounds(20, 200, 50, 50);
         algorithmPanel.add(backButton);
         backButton.addActionListener(e -> layout.show(mainPanel, "Lobby"));
 
         JButton fifoButton = createStyledButton(CommonConstants.fifoDefault,
-                CommonConstants.fifoDefault, CommonConstants.fifoDefault, new Dimension(300, 201));
+                CommonConstants.fifoHover, CommonConstants.fifoClick, new Dimension(400, 268));
         JButton lruButton = createStyledButton(CommonConstants.lruDefault,
-                CommonConstants.lruDefault, CommonConstants.lruDefault, new Dimension(217, 201));
+                CommonConstants.lruHover, CommonConstants.lruClick, new Dimension(290, 268));
         JButton scaButton = createStyledButton(CommonConstants.scaDefault,
-                CommonConstants.scaDefault, CommonConstants.scaDefault, new Dimension(258, 105));
+                CommonConstants.scaHover, CommonConstants.scaClick, new Dimension(345, 138));
         JButton escaButton = createStyledButton(CommonConstants.escaDefault,
-                CommonConstants.escaDefault, CommonConstants.escaDefault, new Dimension(258, 105));
+                CommonConstants.escaHover, CommonConstants.escaClick, new Dimension(345, 138));
         JButton optButton = createStyledButton(CommonConstants.optDefault,
-                CommonConstants.optDefault, CommonConstants.optDefault, new Dimension(284, 120));
+                CommonConstants.optHover, CommonConstants.optClick, new Dimension(350, 201));
         JButton lfuButton = createStyledButton(CommonConstants.lfuDefault,
-                CommonConstants.lfuDefault, CommonConstants.lfuDefault, new Dimension(284, 186));
+                CommonConstants.lfuHover, CommonConstants.lfuClick, new Dimension(350, 205));
         JButton mfuButton = createStyledButton(CommonConstants.mfuDefault,
-                CommonConstants.mfuDefault, CommonConstants.mfuDefault, new Dimension(109, 201));
+                CommonConstants.mfuHover, CommonConstants.mfuClick, new Dimension(145, 268));
         JButton allButton = createStyledButton(CommonConstants.allDefault,
-                CommonConstants.allDefault, CommonConstants.allDefault, new Dimension(109, 105));
+                CommonConstants.allHover, CommonConstants.allClick, new Dimension(145, 138));
 
         positionButtons(fifoButton, lruButton, scaButton, escaButton, optButton, lfuButton, mfuButton, allButton);
 
@@ -242,14 +243,15 @@ public class App extends JFrame {
 
     private void positionButtons(JButton fifo, JButton lru, JButton sca, JButton esca, JButton opt, JButton lfu,
             JButton mfu, JButton all) {
-        fifo.setBounds(280, 350, 300, 201);
-        lru.setBounds(590, 350, 217, 201);
-        sca.setBounds(280, 560, 258, 105);
-        esca.setBounds(548, 560, 258, 105);
-        opt.setBounds(817, 350, 284, 120);
-        lfu.setBounds(817, 480, 284, 186);
-        mfu.setBounds(1110, 350, 109, 201);
-        all.setBounds(1110, 561, 109, 105);
+        float center = 57.5f;
+        fifo.setBounds(200 - (int) center, 330, 400, 268);
+        lru.setBounds(610 - (int) center, 330, 290, 268);
+        sca.setBounds(200 - (int) center, 608, 345, 138);
+        esca.setBounds(555 - (int) center, 608, 345, 138);
+        opt.setBounds(910 - (int) center, 330, 350, 201);
+        lfu.setBounds(910 - (int) center, 541, 350, 201);
+        mfu.setBounds(1270 - (int) center, 330, 145, 268);
+        all.setBounds(1270 - (int) center, 608, 145, 135);
     }
 
     private void showFifoSimulationScreen() {
@@ -318,8 +320,8 @@ public class App extends JFrame {
         frameSize = dataInputScreen.getDropdownFrameSize();
         
         EnhancedSecondChanceSimulationScreen fifoScreen = new EnhancedSecondChanceSimulationScreen(layout, mainPanel, refLen, referenceString, frameSize);
-        mainPanel.add(fifoScreen, "SecondChanceSimulationScreen");
-        layout.show(mainPanel, "SecondChanceSimulationScreen");
+        mainPanel.add(fifoScreen, "EnhancedSecondChanceSimulationScreen");
+        layout.show(mainPanel, "EnhancedSecondChanceSimulationScreen");
     }
 
 }

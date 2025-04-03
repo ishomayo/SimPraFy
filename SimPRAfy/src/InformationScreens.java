@@ -32,29 +32,21 @@ public class InformationScreens {
     }
     
 
-    // public void showHelp() {
-    //     JPanel panel = new BackgroundPanel(CommonConstants.help); // Background panel
-    //     panel.setLayout(new BorderLayout()); // Set BorderLayout for positioning
+    public void showHelp() {
+        BackgroundPanel panel = new BackgroundPanel(CommonConstants.help);
+        panel.setLayout(null);
     
-    //     // Create and style backButton with red border
-    //     JButton backButton = createStyledButton(CommonConstants.backDefault, CommonConstants.backClicked,
-    //             CommonConstants.backClicked);
-    //     backButton.setBorder(BorderFactory.createLineBorder(Color.RED, 2)); // Add red border
+        JButton backButton = createStyledButton(CommonConstants.backDefault, CommonConstants.backClick, 
+                CommonConstants.backClick);
     
-    //     // Center button horizontally at the bottom using FlowLayout
-    //     JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 10)); // Centered with padding
-    //     buttonPanel.setOpaque(false); // Transparent background
-    //     buttonPanel.add(backButton);
+        backButton.setBounds(60, 70, 50, 50);
     
-    //     // Action: Go back to Lobby
-    //     backButton.addActionListener(e -> layout.show(mainPanel, "Lobby"));
+        backButton.addActionListener(e -> layout.show(mainPanel, "Lobby"));
     
-    //     // Add buttonPanel to the bottom of the panel
-    //     panel.add(buttonPanel, BorderLayout.SOUTH);
-    //     panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-    
-    //     mainPanel.add(panel, "Help");
-    // }
+        panel.add(backButton);
+        
+        mainPanel.add(panel, "Help");
+    }
 
     // Helper method for button styling
     private static JButton createStyledButton(String defaultIconPath, String hoverIconPath, String clickIconPath) {
