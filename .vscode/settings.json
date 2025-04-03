@@ -1,0 +1,6 @@
+{
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "SimPRAfy/lib/itextpdf-5.5.13.3.jar"
+    ]
+}

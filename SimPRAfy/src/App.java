@@ -3,11 +3,11 @@ import javax.swing.JButton;
 // import javax.swing.JCheckBox;
 // import javax.swing.JComboBox;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
+// import javax.swing.JLabel;
 // import javax.swing.JLabel;
 // import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
+// import javax.swing.SwingConstants;
 // import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
@@ -27,10 +27,8 @@ public class App extends JFrame {
     private CardLayout layout = new CardLayout();
     private JPanel mainPanel = new JPanel(layout);
     private DataInputScreen dataInputScreen;
-
-    private static final int BASE_X = 250; // Base X position for adjustments
-    private static final int BASE_Y = 400; // Base Y position for adjustments
-    private static final double SCALE = 1.2; // Adjust this for scaling
+    private int refLen, frameSize;
+    private String referenceString;
 
     public static void main(String[] args) throws Exception {
         SwingUtilities.invokeLater(() -> {
@@ -182,9 +180,6 @@ public class App extends JFrame {
     }
 
     public void selectAlgorithmScreen() {
-        dataInputScreen.getDropdownRefLen();
-        dataInputScreen.getTextArea();
-        dataInputScreen.getDropdownFrameSize();
         ImageIcon backgroundImage = new ImageIcon(CommonConstants.selectAlgoBG);
 
         JPanel algorithmPanel = new JPanel(null) {
@@ -257,7 +252,11 @@ public class App extends JFrame {
     }
 
     private void showFifoSimulationScreen() {
-        FifoSimulationScreen fifoScreen = new FifoSimulationScreen(layout, mainPanel);
+        refLen = dataInputScreen.getDropdownRefLen();
+        referenceString = dataInputScreen.getTextArea();
+        frameSize = dataInputScreen.getDropdownFrameSize();
+
+        FifoSimulationScreen fifoScreen = new FifoSimulationScreen(layout, mainPanel, refLen, referenceString, frameSize);
         mainPanel.add(fifoScreen, "FifoSimulationScreen");
         layout.show(mainPanel, "FifoSimulationScreen");
     }

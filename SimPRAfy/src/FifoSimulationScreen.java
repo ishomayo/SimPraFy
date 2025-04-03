@@ -21,11 +21,18 @@ public class FifoSimulationScreen extends JPanel {
     private Queue<Integer> frames;
     private int step;
     private JScrollPane scrollPane;
+    private ImageSaver imageSaver;
+    
+    private String referenceStringInput;
 
-    public FifoSimulationScreen(CardLayout layout, JPanel mainPanel) {
+    public FifoSimulationScreen(CardLayout layout, JPanel mainPanel, int refLen, String referenceStringInput, int frameSize) {
         this.setLayout(null);
         this.setBackground(new Color(2, 13, 25));
         this.setPreferredSize(new Dimension(1500, 844));
+
+        // this.refLen = refLen;
+        this.referenceStringInput = referenceStringInput;
+        this.frameSize = frameSize;
 
         // Back Button
         JButton backButton = createStyledButton(CommonConstants.backDefault,
@@ -145,20 +152,22 @@ public class FifoSimulationScreen extends JPanel {
         JButton saveButton = createStyledButton(CommonConstants.saveDefaultSIM,
                 CommonConstants.saveHoveSIM, CommonConstants.saveClickSIM, new Dimension(250, 75));
         saveButton.setBounds(1130, 675, 250, 75);
+        saveButton.setEnabled(false);
         this.add(saveButton);
 
-        startButton.addActionListener(e -> startSimulation());
+        startButton.addActionListener(e -> startSimulation(saveButton));
         stopButton.addActionListener(e -> stopSimulation());
     }
 
-    private void startSimulation() {
+    private void startSimulation(JButton saveButton) {
+        System.out.println(referenceStringInput);
         try {
-            String[] refStrArr = refInput.getText().trim().split(" ");
+            String[] refStrArr = referenceStringInput.trim().split(" ");
             referenceString = new int[refStrArr.length];
             for (int i = 0; i < refStrArr.length; i++) {
                 referenceString[i] = Integer.parseInt(refStrArr[i]);
             }
-            frameSize = Integer.parseInt(frameInput.getText().trim());
+            // frameSize = Integer.parseInt(frameInput.getText().trim());
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Invalid Input!", "Error", JOptionPane.ERROR_MESSAGE);
             return;
@@ -245,7 +254,40 @@ public class FifoSimulationScreen extends JPanel {
         });
 
         timer.start();
+
+        saveButton.setEnabled(true);
+
+        saveButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+                Object[] choices = {"PNG", "PDF", "CANCEL"};
+                Object selected = JOptionPane.showOptionDialog(null, "Select format to save.", "Save", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, choices, choices[0]);
+            
+                if((int)selected!=2){
+                    String option = "PNG";
+                    if((int)selected == 1)
+                        option = "PDF"; 
+                    // visualPanel.setIsSaving(true);  
+                    boolean ok = saveOutput(gridPanel, option);	
+			        // visualPanel.setIsSaving(false);
+                    if(ok)
+                        JOptionPane.showMessageDialog(null, "Saved successfully.", "Save", JOptionPane.INFORMATION_MESSAGE);
+                    else
+                        JOptionPane.showMessageDialog(null, "Cannot save at the moment.", "Save", JOptionPane.WARNING_MESSAGE);
+                }
+            }
+		});
     }
+
+    public boolean saveOutput(javax.swing.JPanel panel, String extension){
+        ImageSaver is = new ImageSaver(panel);
+        if(extension.equals("PNG"))
+            is.saveAsImage();
+        else
+            is.saveAsPDF();
+        if(is.getHasError())
+            return false;
+        return true;
+	}
 
     private void stopSimulation() {
         if (timer != null) {
