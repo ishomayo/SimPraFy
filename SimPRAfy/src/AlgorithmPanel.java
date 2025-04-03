@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.util.*;
+import java.util.Queue;
 
 /**
  * Panel representing a single page replacement algorithm visualization
@@ -70,6 +71,7 @@ public class AlgorithmPanel extends JPanel {
         JScrollPane scrollPane = new JScrollPane(gridPanel);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+        scrollPane.setBorder(BorderFactory.createLineBorder(Color.GREEN, 5));
         scrollPane.getViewport().setBackground(new Color(2, 13, 25));
         scrollPane.setBorder(null);
         

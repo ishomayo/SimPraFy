@@ -6,6 +6,8 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
 
+// Update the MultiAlgorithmSimulationScreen class to match the provided design
+
 public class MultiAlgorithmSimulationScreen extends JPanel {
     private JTextField refInput, frameInput;
     private JPanel algorithmsPanel;
@@ -19,11 +21,14 @@ public class MultiAlgorithmSimulationScreen extends JPanel {
     private int currentStep = 0;
     private JButton startButton, stopButton, saveButton;
     private ImageSaver imageSaver;
+    private int currentPage = 0;
+    private JButton nextPageButton, prevPageButton;
+    private JLabel pageIndicator;
 
     public MultiAlgorithmSimulationScreen(CardLayout layout, JPanel mainPanel, int refLen, String referenceStringInput,
             int frameSize) {
         this.setLayout(null);
-        this.setBackground(new Color(2, 13, 25));
+        this.setBackground(new Color(2, 13, 25)); // Dark blue background
         this.setPreferredSize(new Dimension(1500, 844));
 
         this.refLen = refLen;
@@ -31,14 +36,14 @@ public class MultiAlgorithmSimulationScreen extends JPanel {
         this.frameSize = frameSize;
         this.algorithmPanels = new ArrayList<>();
 
-        // Back Button
+        // Back Button (left green circle with arrow)
         JButton backButton = createStyledButton(CommonConstants.backDefault,
                 CommonConstants.backClick, CommonConstants.backClick, new Dimension(50, 50));
-        backButton.setBounds(20, 20, 50, 50);
+        backButton.setBounds(20, 70, 50, 50);
         this.add(backButton);
         backButton.addActionListener(e -> layout.show(mainPanel, "AlgorithmSelection"));
 
-        // Reference String Input
+        /// Reference String Input
         JLabel refLabel = new JLabel("Reference String");
         refLabel.setForeground(Color.WHITE);
         refLabel.setBounds(170, 30, 150, 30);
@@ -58,22 +63,45 @@ public class MultiAlgorithmSimulationScreen extends JPanel {
         this.add(frameLabel);
         frameInput = new JTextField();
         frameInput.setText(String.valueOf(frameSize));
-        frameInput.setBorder(BorderFactory.createLineBorder(Color.GREEN, 1));
         frameInput.setBounds(1225, 30, 50, 30);
+        frameInput.setBorder(BorderFactory.createLineBorder(Color.GREEN, 1));
         this.add(frameInput);
 
-        // Simulation Title
-        titleLabel = new JLabel("MULTIPLE ALGORITHM SIMULATION", SwingConstants.CENTER);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 30));
-        titleLabel.setForeground(Color.WHITE);
-        titleLabel.setBounds(0, 80, 1500, 40);
-        this.add(titleLabel);
+        // Main container panel with border
+        JPanel mainContainer = new JPanel();
+        mainContainer.setLayout(null);
+        mainContainer.setBounds(135, 120, 1300, 500);
+        mainContainer.setBorder(BorderFactory.createLineBorder(Color.GREEN, 1, true));
+        mainContainer.setBackground(new Color(5, 20, 35)); // Slightly lighter than background
+        this.add(mainContainer);
 
-        // Create algorithms panel with GridLayout (2x4, though we'll only use 7 slots)
-        algorithmsPanel = new JPanel(new GridLayout(2, 4, 10, 10));
+        // Create algorithms panel with GridLayout (2x2)
+        algorithmsPanel = new JPanel(new GridLayout(2, 2, 20, 20));
         algorithmsPanel.setOpaque(false);
-        algorithmsPanel.setBounds(50, 130, 1400, 500);
-        this.add(algorithmsPanel);
+        algorithmsPanel.setBounds(15, 15, 1270, 470);
+        mainContainer.add(algorithmsPanel);
+
+        // Page navigation buttons
+        prevPageButton = new JButton("◀");
+        prevPageButton.setBounds(135, 620, 50, 30);
+        prevPageButton.setForeground(Color.WHITE);
+        prevPageButton.setBackground(new Color(20, 30, 45));
+        prevPageButton.setFocusPainted(false);
+        prevPageButton.addActionListener(e -> showPreviousPage());
+        this.add(prevPageButton);
+
+        pageIndicator = new JLabel("Page 1/2", SwingConstants.CENTER);
+        pageIndicator.setForeground(Color.WHITE);
+        pageIndicator.setBounds(200, 620, 1100, 30);
+        this.add(pageIndicator);
+
+        nextPageButton = new JButton("▶");
+        nextPageButton.setBounds(1385, 620, 50, 30);
+        nextPageButton.setForeground(Color.WHITE);
+        nextPageButton.setBackground(new Color(20, 30, 45));
+        nextPageButton.setFocusPainted(false);
+        nextPageButton.addActionListener(e -> showNextPage());
+        this.add(nextPageButton);
 
         // Initialize algorithm panels
         initializeAlgorithmPanels();
@@ -81,62 +109,102 @@ public class MultiAlgorithmSimulationScreen extends JPanel {
         // Speed Slider
         JLabel speedLabel = new JLabel("SPEED");
         speedLabel.setForeground(Color.WHITE);
-        speedLabel.setBounds(150, 658, 100, 30);
+        speedLabel.setBounds(150, 708, 100, 30);
         this.add(speedLabel);
         speedSlider = new JSlider(JSlider.HORIZONTAL, 100, 2000, 500);
-        speedSlider.setBounds(200, 660, 300, 30);
+        speedSlider.setBounds(200, 710, 300, 30);
         speedSlider.setOpaque(false);
         this.add(speedSlider);
 
-        JLabel slowLabel = new JLabel("Slow");
+        JLabel slowLabel = new JLabel("Slower");
         slowLabel.setForeground(Color.WHITE);
-        slowLabel.setBounds(200, 690, 50, 20);
+        slowLabel.setBounds(200, 740, 50, 20);
         this.add(slowLabel);
 
-        JLabel fastLabel = new JLabel("Fast");
+        JLabel fastLabel = new JLabel("Faster");
         fastLabel.setForeground(Color.WHITE);
-        fastLabel.setBounds(450, 690, 50, 20);
+        fastLabel.setBounds(450, 740, 50, 20);
         this.add(fastLabel);
 
         // Control Buttons
-        startButton = createStyledButton(CommonConstants.startDefaultSIM,
-                CommonConstants.startHoveSIM, CommonConstants.startClickSIM, new Dimension(250, 75));
-        startButton.setBounds(610, 650, 250, 75);
+        JButton startButton = createStyledButton(CommonConstants.startDefaultSIM,
+                CommonConstants.startHoverSIM, CommonConstants.startClickSIM, new Dimension(250, 75));
+        startButton.setBounds(610, 675, 250, 75);
         this.add(startButton);
-        
-        stopButton = createStyledButton(CommonConstants.stopDefaultSIM,
-                CommonConstants.stopHoveSIM, CommonConstants.stopClickSIM, new Dimension(250, 75));
-        stopButton.setBounds(870, 650, 250, 75);
+        JButton stopButton = createStyledButton(CommonConstants.stopDefaultSIM,
+                CommonConstants.stopHoverSIM, CommonConstants.stopClickSIM, new Dimension(250, 75));
+        stopButton.setBounds(870, 675, 250, 75);
         this.add(stopButton);
-        
-        saveButton = createStyledButton(CommonConstants.saveDefaultSIM,
-                CommonConstants.saveHoveSIM, CommonConstants.saveClickSIM, new Dimension(250, 75));
-        saveButton.setBounds(1130, 650, 250, 75);
+        JButton saveButton = createStyledButton(CommonConstants.saveDefaultSIM,
+                CommonConstants.saveHoverSIM, CommonConstants.saveClickSIM, new Dimension(250, 75));
+        saveButton.setBounds(1130, 675, 250, 75);
         saveButton.setEnabled(false);
         this.add(saveButton);
 
         startButton.addActionListener(e -> startSimulation());
         stopButton.addActionListener(e -> stopSimulation());
         saveButton.addActionListener(e -> saveSimulation());
+
+        // Show first page
+        showPage(0);
     }
 
     private void initializeAlgorithmPanels() {
         // Create and add algorithm panels with correct names and short codes
         String[] algorithmNames = {
-            "FIFO", "LRU", "OPT", "SC", "ESC", "LFU", "MFU"
+                "FIFO", "LRU", "OPT", "SC", "ESC", "LFU", "MFU"
         };
-        
+
         String[] displayNames = {
-            "FIRST IN FIRST OUT", "LEAST RECENTLY USED", "OPTIMAL", 
-            "SECOND CHANCE", "ENHANCED SECOND CHANCE", "LEAST FREQUENTLY USED", 
-            "MOST FREQUENTLY USED"
+                "FIRST IN FIRST OUT", "LEAST RECENTLY USED", "OPTIMAL",
+                "SECOND CHANCE", "ENHANCED SECOND CHANCE", "LEAST FREQUENTLY USED",
+                "MOST FREQUENTLY USED"
         };
-        
+
+        // Create all algorithm panels but don't add them to the layout yet
         for (int i = 0; i < algorithmNames.length; i++) {
             AlgorithmPanel panel = new AlgorithmPanel(algorithmNames[i], frameSize);
             panel.setName(displayNames[i]); // Store full name as component name
             algorithmPanels.add(panel);
-            algorithmsPanel.add(panel);
+        }
+    }
+
+    private void showPage(int page) {
+        algorithmsPanel.removeAll();
+        currentPage = page;
+
+        // Calculate total pages needed
+        int totalPages = (int) Math.ceil(algorithmPanels.size() / 4.0);
+
+        // Update page indicator
+        pageIndicator.setText("Page " + (page + 1) + "/" + totalPages);
+
+        // Enable/disable navigation buttons
+        prevPageButton.setEnabled(page > 0);
+        nextPageButton.setEnabled(page < totalPages - 1);
+
+        // Add appropriate panels for this page
+        int startIdx = page * 4;
+        int endIdx = Math.min(startIdx + 4, algorithmPanels.size());
+
+        for (int i = startIdx; i < endIdx; i++) {
+            algorithmsPanel.add(algorithmPanels.get(i));
+        }
+
+        algorithmsPanel.revalidate();
+        algorithmsPanel.repaint();
+    }
+
+    private void showNextPage() {
+        int totalPages = (int) Math.ceil(algorithmPanels.size() / 4.0);
+        if (currentPage < totalPages - 1) {
+            showPage(currentPage + 1);
+        }
+    }
+
+    private void showPreviousPage() {
+        if (currentPage > 0) {
+            showPage(currentPage - 1);
         }
     }
 
@@ -145,19 +213,19 @@ public class MultiAlgorithmSimulationScreen extends JPanel {
             // Parse reference string and frame size
             String refString = refInput.getText().trim();
             frameSize = Integer.parseInt(frameInput.getText().trim());
-            
+
             String[] refStrArr = refString.split(" ");
             int[] referenceString = new int[refStrArr.length];
             for (int i = 0; i < refStrArr.length; i++) {
                 referenceString[i] = Integer.parseInt(refStrArr[i]);
             }
-            
+
             // Reset all algorithm panels
             currentStep = 0;
             for (AlgorithmPanel panel : algorithmPanels) {
                 panel.reset(frameSize, referenceString);
             }
-            
+
             // Start the timer for synchronized stepping
             timer = new Timer(2100 - speedSlider.getValue(), e -> {
                 if (currentStep < referenceString.length) {
@@ -170,9 +238,9 @@ public class MultiAlgorithmSimulationScreen extends JPanel {
                     saveButton.setEnabled(true);
                 }
             });
-            
+
             timer.start();
-            
+
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Invalid Input!", "Error", JOptionPane.ERROR_MESSAGE);
         }

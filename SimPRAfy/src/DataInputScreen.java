@@ -66,7 +66,7 @@ public class DataInputScreen extends JPanel {
             CommonConstants.fileHover, CommonConstants.fileHover);
 
         JButton backButton = createStyledButton(CommonConstants.backDefault, 
-            CommonConstants.backClick, CommonConstants.backClick);
+            CommonConstants.backClick2, CommonConstants.backClick2);
 
         positionButtons(randomButton, userInputButton, fileInputButton, backButton);
 
@@ -96,7 +96,7 @@ public class DataInputScreen extends JPanel {
         };
         randomDataPanel.setOpaque(false);
 
-        JButton backButton = createStyledButton(CommonConstants.backDefault, CommonConstants.backClick, CommonConstants.backClick);
+        JButton backButton = createStyledButton(CommonConstants.backDefault, CommonConstants.backClick2, CommonConstants.backClick2);
         backButton.setBounds(20, 200, 50, 50);
         randomDataPanel.add(backButton);
         backButton.addActionListener(e -> layout.show(mainPanel, "Lobby"));
@@ -136,7 +136,7 @@ public class DataInputScreen extends JPanel {
         };
         userInputPanel.setOpaque(false);
 
-        JButton backButton = createStyledButton(CommonConstants.backDefault, CommonConstants.backClick, CommonConstants.backClick);
+        JButton backButton = createStyledButton(CommonConstants.backDefault, CommonConstants.backClick2, CommonConstants.backClick2);
         backButton.setBounds(20, 200, 50, 50);
         userInputPanel.add(backButton);
         backButton.addActionListener(e -> layout.show(mainPanel, "Lobby"));
@@ -178,7 +178,7 @@ public class DataInputScreen extends JPanel {
 
         fileInputPanel.setOpaque(false);
 
-        JButton backButton = createStyledButton(CommonConstants.backDefault, CommonConstants.backClick, CommonConstants.backClick);
+        JButton backButton = createStyledButton(CommonConstants.backDefault, CommonConstants.backClick2, CommonConstants.backClick2);
         backButton.setBounds(20, 200, 50, 50);
         fileInputPanel.add(backButton);
         backButton.addActionListener(e -> layout.show(mainPanel, "Lobby"));
