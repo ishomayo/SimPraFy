@@ -9,24 +9,35 @@ public class CommonConstants {
     private static final String BASE_PATH;
 
     static {
-        // Get the base path of the resources folder
-        URL resourceUrl = CommonConstants.class.getClassLoader().getResource("resources");
-
+        // Try to get the resources directory from the classpath
+        URL resourceUrl = CommonConstants.class.getClassLoader().getResource("simulator/resources");
+        
         if (resourceUrl != null) {
-            // Add trailing slash to prevent path concatenation errors
+            // Use the URL path if available
             BASE_PATH = resourceUrl.getPath() + File.separator;
         } else {
-            // Fallback to current directory if resource folder is not found
+            // Fallback to a relative path from the current working directory
             String currentDir = System.getProperty("user.dir");
-
-            if (new File(currentDir + "/src/resources").exists()) {
-                BASE_PATH = currentDir + "/src/resources/";
+            
+            // Check if we're running from the project root or from within the src directory
+            if (new File(currentDir + "/SimPRAfy/src/resources").exists()) {
+                BASE_PATH = "SimPRAfy/src/resources/";
+            } else if (new File(currentDir + "/src/resources").exists()) {
+                BASE_PATH = "src/resources/";
+            } else if (new File(currentDir + "/simulator/resources").exists()) {
+                BASE_PATH = "resources/";
             } else {
-                BASE_PATH = currentDir + "/resources/";
-                new File(BASE_PATH).mkdirs(); // Create if missing
+                // If none of the above paths work, try to use a resource folder in the current directory
+                BASE_PATH = "resources/";
+                
+                // Create the resources directory if it doesn't exist
+                new File(BASE_PATH).mkdirs();
+                
+                System.out.println("Warning: Resource directory not found. Using " + 
+                                  new File(BASE_PATH).getAbsolutePath() + " instead.");
             }
         }
-
+        
         System.out.println("Using resource path: " + BASE_PATH);
     }
 

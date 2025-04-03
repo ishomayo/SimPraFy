@@ -22,10 +22,11 @@ public class FifoSimulationScreen extends JPanel {
     private int step;
     private JScrollPane scrollPane;
     private ImageSaver imageSaver;
-    
+
     private String referenceStringInput;
 
-    public FifoSimulationScreen(CardLayout layout, JPanel mainPanel, int refLen, String referenceStringInput, int frameSize) {
+    public FifoSimulationScreen(CardLayout layout, JPanel mainPanel, int refLen, String referenceStringInput,
+            int frameSize) {
         this.setLayout(null);
         this.setBackground(new Color(2, 13, 25));
         this.setPreferredSize(new Dimension(1500, 844));
@@ -48,6 +49,7 @@ public class FifoSimulationScreen extends JPanel {
         refLabel.setFont(new Font("Arial", Font.BOLD, 15));
         this.add(refLabel);
         refInput = new JTextField();
+        refInput.setText(referenceStringInput);
         refInput.setBorder(BorderFactory.createLineBorder(Color.GREEN, 1));
         refInput.setBounds(300, 30, 800, 30);
         this.add(refInput);
@@ -59,6 +61,7 @@ public class FifoSimulationScreen extends JPanel {
         frameLabel.setFont(new Font("Arial", Font.BOLD, 15));
         this.add(frameLabel);
         frameInput = new JTextField();
+        frameInput.setText(String.valueOf(frameSize));
         frameInput.setBounds(1225, 30, 50, 30);
         frameInput.setBorder(BorderFactory.createLineBorder(Color.GREEN, 1));
         this.add(frameInput);
@@ -159,6 +162,16 @@ public class FifoSimulationScreen extends JPanel {
         stopButton.addActionListener(e -> stopSimulation());
     }
 
+    // Setter for Reference String Input
+    public void setReferenceStringInput(String referenceString) {
+        this.refInput.setText(referenceString);
+    }
+
+    // Setter for Frame Size Input
+    public void setFrameSizeInput(String frameSize) {
+        this.frameInput.setText(frameSize);
+    }
+
     private void startSimulation(JButton saveButton) {
         System.out.println(referenceStringInput);
         try {
@@ -257,37 +270,40 @@ public class FifoSimulationScreen extends JPanel {
 
         saveButton.setEnabled(true);
 
-        saveButton.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent e){
-                Object[] choices = {"PNG", "PDF", "CANCEL"};
-                Object selected = JOptionPane.showOptionDialog(null, "Select format to save.", "Save", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, choices, choices[0]);
-            
-                if((int)selected!=2){
+        saveButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Object[] choices = { "PNG", "PDF", "CANCEL" };
+                Object selected = JOptionPane.showOptionDialog(null, "Select format to save.", "Save",
+                        JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, choices, choices[0]);
+
+                if ((int) selected != 2) {
                     String option = "PNG";
-                    if((int)selected == 1)
-                        option = "PDF"; 
-                    // visualPanel.setIsSaving(true);  
-                    boolean ok = saveOutput(gridPanel, option);	
-			        // visualPanel.setIsSaving(false);
-                    if(ok)
-                        JOptionPane.showMessageDialog(null, "Saved successfully.", "Save", JOptionPane.INFORMATION_MESSAGE);
+                    if ((int) selected == 1)
+                        option = "PDF";
+                    // visualPanel.setIsSaving(true);
+                    boolean ok = saveOutput(gridPanel, option);
+                    // visualPanel.setIsSaving(false);
+                    if (ok)
+                        JOptionPane.showMessageDialog(null, "Saved successfully.", "Save",
+                                JOptionPane.INFORMATION_MESSAGE);
                     else
-                        JOptionPane.showMessageDialog(null, "Cannot save at the moment.", "Save", JOptionPane.WARNING_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "Cannot save at the moment.", "Save",
+                                JOptionPane.WARNING_MESSAGE);
                 }
             }
-		});
+        });
     }
 
-    public boolean saveOutput(javax.swing.JPanel panel, String extension){
+    public boolean saveOutput(javax.swing.JPanel panel, String extension) {
         ImageSaver is = new ImageSaver(panel);
-        if(extension.equals("PNG"))
+        if (extension.equals("PNG"))
             is.saveAsImage();
         else
             is.saveAsPDF();
-        if(is.getHasError())
+        if (is.getHasError())
             return false;
         return true;
-	}
+    }
 
     private void stopSimulation() {
         if (timer != null) {
