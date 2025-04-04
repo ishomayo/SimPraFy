@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="icon.png" alt="Logo" width="150">
+  <img src="logo.png" alt="Logo" width="150">
 </p>
 
 # AlgoriSim
