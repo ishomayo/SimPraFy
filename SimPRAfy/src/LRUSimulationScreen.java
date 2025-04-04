@@ -208,9 +208,9 @@ public class LRUSimulationScreen extends JPanel {
                     // Create a fixed-size column
                     JPanel columnPanel = new JPanel();
                     columnPanel.setLayout(new BorderLayout());
-                    columnPanel.setPreferredSize(new Dimension(80, 250));
-                    columnPanel.setMaximumSize(new Dimension(80, 250));
-                    columnPanel.setMinimumSize(new Dimension(80, 250));
+                    columnPanel.setPreferredSize(new Dimension(80, 300)); // Increased height to accommodate stats
+                    columnPanel.setMaximumSize(new Dimension(80, 300));
+                    columnPanel.setMinimumSize(new Dimension(80, 300));
                     columnPanel.setBorder(BorderFactory.createLineBorder(Color.GREEN, 1));
                     columnPanel.setBackground(new Color(30, 30, 30));
 
@@ -247,15 +247,31 @@ public class LRUSimulationScreen extends JPanel {
                         index++;
                     }
 
+                    // Create a panel for the statistics at the bottom of each column
+                    JPanel statsPanel = new JPanel(new GridLayout(2, 1));
+                    statsPanel.setBackground(new Color(30, 30, 30));
+
+                    JLabel faultLabel = new JLabel("Faults: " + pageFaults, SwingConstants.CENTER);
+                    faultLabel.setForeground(Color.WHITE);
+                    faultLabel.setFont(new Font("Arial", Font.PLAIN, 12));
+
+                    JLabel hitLabel = new JLabel("Hits: " + pageHits, SwingConstants.CENTER);
+                    hitLabel.setForeground(Color.WHITE);
+                    hitLabel.setFont(new Font("Arial", Font.PLAIN, 12));
+
+                    statsPanel.add(faultLabel);
+                    statsPanel.add(hitLabel);
+
                     columnPanel.add(pageContainer, BorderLayout.CENTER);
-                    columnPanel.add(statusLabel, BorderLayout.SOUTH);
+                    columnPanel.add(statusLabel, BorderLayout.NORTH);
+                    columnPanel.add(statsPanel, BorderLayout.SOUTH);
 
                     gridPanel.add(columnPanel);
                     gridPanel.add(Box.createRigidArea(new Dimension(10, 0))); // Add spacing between columns
 
                     // Update total width and set as preferred size
                     totalWidth += 90; // 80 for panel + 10 for spacing
-                    gridPanel.setPreferredSize(new Dimension(totalWidth, 250));
+                    gridPanel.setPreferredSize(new Dimension(totalWidth, 300));
 
                     // Ensure the newest column is visible by scrolling to it
                     SwingUtilities.invokeLater(() -> {
