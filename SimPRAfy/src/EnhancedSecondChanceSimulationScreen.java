@@ -216,9 +216,9 @@ public class EnhancedSecondChanceSimulationScreen extends JPanel {
                     // Create a fixed-size column
                     JPanel columnPanel = new JPanel();
                     columnPanel.setLayout(new BorderLayout());
-                    columnPanel.setPreferredSize(new Dimension(80, 250));
-                    columnPanel.setMaximumSize(new Dimension(80, 250));
-                    columnPanel.setMinimumSize(new Dimension(80, 250));
+                    columnPanel.setPreferredSize(new Dimension(80, 350));
+                    columnPanel.setMaximumSize(new Dimension(80, 350));
+                    columnPanel.setMinimumSize(new Dimension(80, 350));
                     columnPanel.setBorder(BorderFactory.createLineBorder(Color.GREEN, 1));
                     columnPanel.setBackground(new Color(30, 30, 30));
 
