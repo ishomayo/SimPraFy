@@ -41,9 +41,9 @@ java -jar SimPraFy.jar
 ## (For User-defined Input from a Text File)
 The application expects input files to be formatted as follows:
 * Each line contains three space-separated integers in the following order:
-  - Arrival Time
-  - Burst Time
-  - Priority
+  - Reference Length
+  - Reference String
+  - Frames
 
 ### Example File Format
 ```
@@ -62,9 +62,22 @@ _**Note: A sample .txt file is given as example named "fileInput_1.txt" and "fil
 * **Graphical Interface:** Intuitive UI using Java Swing.
 * **Scheduling Algorithms:** Simulates FIFO, LRU, OPT, Second Chance Algorithm, Enhanced Second Chance Algorithm, LFU, and MFU
 * **Interactive Selection:** Users can navigate between different screens to choose and simulate algorithms.
+* **File Saving**: Users can save a file (PDF or PNG) showing the output of the algorithm chosen.
 
 # Snapshots
-* Lobby 
+* Lobby <br/><br/>![image](https://github.com/user-attachments/assets/b71cc52b-3c69-4c14-8d59-9f23fcfb9ac0)<br/><br/>
+* Data Input Methods<br/><br/>![image](https://github.com/user-attachments/assets/01cd5346-36cc-47b5-9c9a-86811607f8d9)<br/><br/>![image](https://github.com/user-attachments/assets/2a8b0969-cfdc-4167-a7f0-810c8ad2416c)<br/><br/>![image](https://github.com/user-attachments/assets/dfe7605e-2087-415f-a12c-0ebdb32760e3)<br/><br/>
+* Algorithm Selection Screen<br/><br/>![image](https://github.com/user-attachments/assets/127c95d8-6b22-41be-937b-25ccec3eaa01)<br/><br/>
+* Sample (FIFO: First-In, First-Out) Screen<br/><br/>![image](https://github.com/user-attachments/assets/9e8a031b-00bb-4c10-9084-160080cc4012)<br/><br/>
+* Sample (All Algorithms) Screen<br/><br/>![image](https://github.com/user-attachments/assets/e2b1f994-ce68-4663-b1d2-ad24dbf20a28)<br/><br/>![image](https://github.com/user-attachments/assets/f2f70a72-f5d1-47e5-b715-75336bcc7ba1)<br/><br/>
+
+
+
+
+
+
+
+
 
 
 
