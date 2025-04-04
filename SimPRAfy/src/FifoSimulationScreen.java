@@ -30,7 +30,6 @@ public class FifoSimulationScreen extends JPanel {
         this.setBackground(new Color(2, 13, 25));
         this.setPreferredSize(new Dimension(1500, 844));
 
-        // this.refLen = refLen;
         this.referenceStringInput = referenceStringInput;
         this.frameSize = frameSize;
 
@@ -51,6 +50,9 @@ public class FifoSimulationScreen extends JPanel {
         refInput.setText(referenceStringInput);
         refInput.setBorder(BorderFactory.createLineBorder(Color.GREEN, 1));
         refInput.setBounds(300, 30, 800, 30);
+        refInput.setFont(new Font("Arial", Font.BOLD, 16));
+        refInput.setForeground(Color.BLACK);
+        refInput.setEditable(false);
         this.add(refInput);
 
         // Frame Size Input
@@ -63,6 +65,9 @@ public class FifoSimulationScreen extends JPanel {
         frameInput.setText(String.valueOf(frameSize));
         frameInput.setBounds(1225, 30, 50, 30);
         frameInput.setBorder(BorderFactory.createLineBorder(Color.GREEN, 1));
+        frameInput.setFont(new Font("Arial", Font.BOLD, 16));
+        frameInput.setForeground(Color.BLACK);
+        frameInput.setEditable(false);
         this.add(frameInput);
 
         // Simulation Title

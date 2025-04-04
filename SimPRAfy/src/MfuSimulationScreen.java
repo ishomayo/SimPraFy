@@ -51,6 +51,9 @@ public class MfuSimulationScreen extends JPanel {
         refInput.setText(referenceStringInput);
         refInput.setBorder(BorderFactory.createLineBorder(Color.GREEN, 1));
         refInput.setBounds(300, 30, 800, 30);
+        refInput.setFont(new Font("Arial", Font.BOLD, 16));
+        refInput.setForeground(Color.BLACK);
+        refInput.setEditable(false);
         this.add(refInput);
 
         // Frame Size Input
@@ -63,6 +66,9 @@ public class MfuSimulationScreen extends JPanel {
         frameInput.setText(String.valueOf(frameSize));
         frameInput.setBounds(1225, 30, 50, 30);
         frameInput.setBorder(BorderFactory.createLineBorder(Color.GREEN, 1));
+        frameInput.setFont(new Font("Arial", Font.BOLD, 16));
+        frameInput.setForeground(Color.BLACK);
+        frameInput.setEditable(false);
         this.add(frameInput);
 
         // Simulation Title
@@ -154,6 +160,7 @@ public class MfuSimulationScreen extends JPanel {
         JButton saveButton = createStyledButton(CommonConstants.saveDefaultSIM,
                 CommonConstants.saveHoverSIM, CommonConstants.saveClickSIM, new Dimension(250, 75));
         saveButton.setBounds(1130, 675, 250, 75);
+        saveButton.setEnabled(false);
         this.add(saveButton);
 
         startButton.addActionListener(e -> startSimulation(saveButton));
