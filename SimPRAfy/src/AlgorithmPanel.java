@@ -544,9 +544,9 @@ public class AlgorithmPanel extends JPanel {
         // Create a fixed-size column for current step
         JPanel columnPanel = new JPanel();
         columnPanel.setLayout(new BorderLayout());
-        columnPanel.setPreferredSize(new Dimension(columnWidth, 250));
-        columnPanel.setMaximumSize(new Dimension(columnWidth, 250));
-        columnPanel.setMinimumSize(new Dimension(columnWidth, 250));
+        columnPanel.setPreferredSize(new Dimension(columnWidth, 270));
+        columnPanel.setMaximumSize(new Dimension(columnWidth, 270));
+        columnPanel.setMinimumSize(new Dimension(columnWidth, 270));
         columnPanel.setBorder(BorderFactory.createLineBorder(Color.GREEN, 1));
         columnPanel.setBackground(new Color(20, 20, 20));
 
