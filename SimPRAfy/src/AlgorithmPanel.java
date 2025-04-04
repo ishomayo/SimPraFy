@@ -529,12 +529,24 @@ public class AlgorithmPanel extends JPanel {
     }
 
     private void updateUI(int page, boolean isHit) {
+        // Determine column width based on algorithm type
+        int columnWidth = 100; // default width for basic algorithms
+
+        // Adjust width for more complex algorithms
+        if (algorithmName.equals("SC")) {
+            columnWidth = 150; // wider for Second Chance
+        } else if (algorithmName.equals("ESC")) {
+            columnWidth = 100; // even wider for Enhanced Second Chance
+        } else if (algorithmName.equals("LFU") || algorithmName.equals("MFU")) {
+            columnWidth = 150; // wider for frequency-based algorithms
+        }
+
         // Create a fixed-size column for current step
         JPanel columnPanel = new JPanel();
         columnPanel.setLayout(new BorderLayout());
-        columnPanel.setPreferredSize(new Dimension(40, 150));
-        columnPanel.setMaximumSize(new Dimension(40, 150));
-        columnPanel.setMinimumSize(new Dimension(40, 150));
+        columnPanel.setPreferredSize(new Dimension(columnWidth, 250));
+        columnPanel.setMaximumSize(new Dimension(columnWidth, 250));
+        columnPanel.setMinimumSize(new Dimension(columnWidth, 250));
         columnPanel.setBorder(BorderFactory.createLineBorder(Color.GREEN, 1));
         columnPanel.setBackground(new Color(20, 20, 20));
 
@@ -543,44 +555,97 @@ public class AlgorithmPanel extends JPanel {
         framePanel.setBackground(new Color(20, 20, 20));
 
         // Create a header with page number
-        JLabel pageLabel = new JLabel("Page " + page, SwingConstants.CENTER);
+        JLabel pageLabel = new JLabel("" + page, SwingConstants.CENTER);
         pageLabel.setForeground(Color.YELLOW);
         pageLabel.setFont(new Font("Arial", Font.BOLD, 12));
         columnPanel.add(pageLabel, BorderLayout.NORTH);
 
         // Display each frame with reference & modify bits when relevant
         for (int i = 0; i < frameSize; i++) {
-            JPanel cellPanel = new JPanel(new BorderLayout());
+            JPanel cellPanel = new JPanel();
             cellPanel.setBackground(new Color(20, 20, 20));
 
-            JLabel cell = new JLabel("", SwingConstants.CENTER);
-            cell.setForeground(Color.GREEN);
-            cell.setFont(new Font("Arial", Font.BOLD, 14));
+            // Use different layouts based on algorithm complexity
+            if (algorithmName.equals("ESC")) {
+                cellPanel.setLayout(new BorderLayout());
+            } else {
+                cellPanel.setLayout(new BorderLayout());
+            }
 
             // Show page number and bits for Second Chance algorithms
             if (i < frames.size()) {
                 int frameValue = frames.get(i);
-                cell.setText(String.valueOf(frameValue));
 
-                // Add reference and modify bits for SC and ESC
-                // Inside the updateUI method, modify the part where it adds reference and
-                // modify bits:
+                // Create main cell label
+                JLabel cell = new JLabel(String.valueOf(frameValue), SwingConstants.CENTER);
+                cell.setForeground(Color.GREEN);
+                cell.setFont(new Font("Arial", Font.BOLD, 14));
 
-                // Add reference and modify bits for SC and ESC
+                // Add details based on algorithm type
                 if (algorithmName.equals("SC")) {
                     int refBit = referenceMap.getOrDefault(frameValue, 0);
-                    // Make the reference bit part of the main cell text instead of a separate label
-                    cell.setText(frameValue + " (R:" + refBit + ")");
-                    // Alternatively, use a distinct color for the frame with reference bit set
+
+                    // For Second Chance, show reference bit clearly
+                    JPanel valuePanel = new JPanel(new BorderLayout());
+                    valuePanel.setBackground(new Color(20, 20, 20));
+
+                    cell.setText(String.valueOf(frameValue));
+                    valuePanel.add(cell, BorderLayout.CENTER);
+
+                    JLabel refLabel = new JLabel("R:" + refBit, SwingConstants.RIGHT);
+                    refLabel.setForeground(Color.CYAN);
+                    refLabel.setFont(new Font("Arial", Font.PLAIN, 10));
+                    valuePanel.add(refLabel, BorderLayout.EAST);
+
+                    cellPanel.add(valuePanel, BorderLayout.CENTER);
+
+                    // Also add tooltip
+                    String tooltipText = "P:" + frameValue + ", R: " + refBit;
+                    cellPanel.setToolTipText(tooltipText);
+
+                    // Highlight reference bit = 1
                     if (refBit == 1) {
-                        cellPanel.setBackground(new Color(30, 50, 30)); // Slightly brighter green background
+                        cellPanel.setBackground(new Color(30, 50, 30));
                     }
                 } else if (algorithmName.equals("ESC")) {
+                    // For Enhanced Second Chance, use two-row layout
                     int refBit = referenceMap.getOrDefault(frameValue, 0);
                     boolean modBit = modifyMap.getOrDefault(frameValue, false);
-                    // Include the bits in the main cell text
-                    cell.setText(frameValue + " (R:" + refBit + ",M:" + (modBit ? "1" : "0") + ")");
-                    // Use color coding for different bit combinations
+
+                    // Main value
+                    JPanel topPanel = new JPanel(new BorderLayout());
+                    topPanel.setBackground(new Color(20, 20, 20));
+
+                    JLabel valueLabel = new JLabel(String.valueOf(frameValue), SwingConstants.CENTER);
+                    valueLabel.setForeground(Color.GREEN);
+                    valueLabel.setFont(new Font("Arial", Font.BOLD, 14));
+                    topPanel.add(valueLabel, BorderLayout.CENTER);
+
+                    // Bits panel
+                    JPanel bitsPanel = new JPanel(new GridLayout(1, 2));
+                    bitsPanel.setBackground(new Color(20, 20, 20));
+
+                    JLabel refLabel = new JLabel("R:" + refBit, SwingConstants.CENTER);
+                    refLabel.setForeground(Color.CYAN);
+                    refLabel.setFont(new Font("Arial", Font.PLAIN, 10));
+
+                    JLabel modLabel = new JLabel("M:" + (modBit ? "1" : "0"), SwingConstants.CENTER);
+                    modLabel.setForeground(Color.ORANGE);
+                    modLabel.setFont(new Font("Arial", Font.PLAIN, 10));
+
+                    bitsPanel.add(refLabel);
+                    bitsPanel.add(modLabel);
+
+                    cellPanel.add(topPanel, BorderLayout.CENTER);
+                    cellPanel.add(bitsPanel, BorderLayout.SOUTH);
+
+                    // Add tooltip
+                    String tooltipText = "P: " + frameValue +
+                            ", Reference bit: " + refBit +
+                            ", Modify bit: " + (modBit ? "1" : "0");
+                    cellPanel.setToolTipText(tooltipText);
+
+                    // Color coding
                     if (refBit == 1 && modBit) {
                         cellPanel.setBackground(new Color(50, 20, 20)); // Red tint for (1,1)
                     } else if (refBit == 1) {
@@ -589,23 +654,47 @@ public class AlgorithmPanel extends JPanel {
                         cellPanel.setBackground(new Color(50, 50, 20)); // Yellow tint for (0,1)
                     }
                 }
+                // Show frequency for LFU/MFU
+                else if (algorithmName.equals("LFU") || algorithmName.equals("MFU")) {
+                    int freq = frequencyMap.getOrDefault(frameValue, 0);
+
+                    JPanel valuePanel = new JPanel(new GridLayout(2, 1, 0, 5)); // Add spacing
+                    valuePanel.setBackground(new Color(20, 20, 20));
+                    valuePanel.setPreferredSize(new Dimension(50, 80)); // Set fixed height
+                    valuePanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Add padding
+
+                    JLabel valueLabel = new JLabel(String.valueOf(frameValue), SwingConstants.CENTER);
+                    valueLabel.setForeground(Color.GREEN);
+                    valueLabel.setFont(new Font("Arial", Font.BOLD, 12));
+                    valuePanel.add(valueLabel);
+
+                    JLabel freqLabel = new JLabel("F: " + freq, SwingConstants.CENTER);
+                    freqLabel.setForeground(Color.ORANGE);
+                    freqLabel.setFont(new Font("Arial", Font.PLAIN, 10));
+                    valuePanel.add(freqLabel);
+
+                    cellPanel.add(valuePanel, BorderLayout.CENTER);
+
+                    String tooltipText = "P: " + frameValue + ", F: " + freq;
+                    cellPanel.setToolTipText(tooltipText);
+                }
+
+                else {
+                    // Default display for simpler algorithms
+                    cellPanel.add(cell, BorderLayout.CENTER);
+                }
 
                 // Highlight the clock pointer for SC and ESC
                 if ((algorithmName.equals("SC") || algorithmName.equals("ESC")) && i == clockPointer) {
-                    cellPanel.setBorder(BorderFactory.createLineBorder(Color.RED, 1));
+                    cellPanel.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
                 }
-
-                // Show frequency for LFU/MFU
-                if (algorithmName.equals("LFU") || algorithmName.equals("MFU")) {
-                    int freq = frequencyMap.getOrDefault(frameValue, 0);
-                    JLabel freqLabel = new JLabel("F:" + freq, SwingConstants.RIGHT);
-                    freqLabel.setForeground(Color.ORANGE);
-                    freqLabel.setFont(new Font("Arial", Font.PLAIN, 8));
-                    cellPanel.add(freqLabel, BorderLayout.EAST);
-                }
+            } else {
+                // Empty cell
+                JLabel cell = new JLabel("", SwingConstants.CENTER);
+                cell.setForeground(Color.GREEN);
+                cellPanel.add(cell, BorderLayout.CENTER);
             }
 
-            cellPanel.add(cell, BorderLayout.CENTER);
             framePanel.add(cellPanel);
         }
 
@@ -619,7 +708,7 @@ public class AlgorithmPanel extends JPanel {
 
         // Add to grid
         gridPanel.add(columnPanel);
-        gridPanel.add(Box.createRigidArea(new Dimension(2, 0))); // Small gap
+        gridPanel.add(Box.createRigidArea(new Dimension(2, 2))); // Small gap
 
         // Update stats
         pageFaultLabel.setText("Page Faults: " + pageFaults);
@@ -628,5 +717,22 @@ public class AlgorithmPanel extends JPanel {
         // Update UI
         gridPanel.revalidate();
         gridPanel.repaint();
+    }
+
+    /**
+     * Helper method to get a font that will fit text in available width
+     */
+    private Font getScaledFont(String text, int availableWidth) {
+        Font currentFont = new Font("Arial", Font.BOLD, 14);
+        FontMetrics metrics = getFontMetrics(currentFont);
+        int textWidth = metrics.stringWidth(text);
+
+        // Scale down if needed
+        if (textWidth > availableWidth - 4) {
+            int newSize = Math.max(8, (int) (14.0 * (availableWidth - 4) / textWidth));
+            return new Font("Arial", Font.BOLD, newSize);
+        }
+
+        return currentFont;
     }
 }

@@ -1,11 +1,10 @@
 import javax.swing.*;
+import javax.swing.plaf.basic.BasicScrollBarUI;
 
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
-
-// Update the MultiAlgorithmSimulationScreen class to match the provided design
 
 public class MultiAlgorithmSimulationScreen extends JPanel {
     private JTextField refInput, frameInput;
@@ -19,9 +18,10 @@ public class MultiAlgorithmSimulationScreen extends JPanel {
     private int currentStep = 0;
     private JButton startButton, stopButton, saveButton;
     private ImageSaver imageSaver;
-    private int currentPage = 0;
-    private JButton nextPageButton, prevPageButton;
-    private JLabel pageIndicator;
+
+    // Define fixed size for algorithm panels
+    private static final int ALGORITHM_PANEL_WIDTH = 600;
+    private static final int ALGORITHM_PANEL_HEIGHT = 400;
 
     public MultiAlgorithmSimulationScreen(CardLayout layout, JPanel mainPanel, int refLen, String referenceStringInput,
             int frameSize) {
@@ -71,7 +71,7 @@ public class MultiAlgorithmSimulationScreen extends JPanel {
         frameInput.setEditable(false);
         this.add(frameInput);
 
-        // Main container panel with border
+        // Main container panel with border and scrolling
         JPanel mainContainer = new JPanel();
         mainContainer.setLayout(null);
         mainContainer.setBounds(135, 120, 1300, 500);
@@ -79,33 +79,30 @@ public class MultiAlgorithmSimulationScreen extends JPanel {
         mainContainer.setBackground(new Color(5, 20, 35)); // Slightly lighter than background
         this.add(mainContainer);
 
-        // Create algorithms panel with GridLayout (2x2)
-        algorithmsPanel = new JPanel(new GridLayout(2, 2, 20, 20));
-        algorithmsPanel.setOpaque(false);
-        algorithmsPanel.setBounds(15, 15, 1270, 470);
-        mainContainer.add(algorithmsPanel);
-
-        // Page navigation buttons
-        prevPageButton = new JButton("◀");
-        prevPageButton.setBounds(135, 620, 50, 30);
-        prevPageButton.setForeground(Color.WHITE);
-        prevPageButton.setBackground(new Color(20, 30, 45));
-        prevPageButton.setFocusPainted(false);
-        prevPageButton.addActionListener(e -> showPreviousPage());
-        this.add(prevPageButton);
-
-        pageIndicator = new JLabel("Page 1/2", SwingConstants.CENTER);
-        pageIndicator.setForeground(Color.WHITE);
-        pageIndicator.setBounds(200, 620, 1100, 30);
-        this.add(pageIndicator);
-
-        nextPageButton = new JButton("▶");
-        nextPageButton.setBounds(1385, 620, 50, 30);
-        nextPageButton.setForeground(Color.WHITE);
-        nextPageButton.setBackground(new Color(20, 30, 45));
-        nextPageButton.setFocusPainted(false);
-        nextPageButton.addActionListener(e -> showNextPage());
-        this.add(nextPageButton);
+        // Create algorithms panel with FlowLayout instead of GridLayout
+        JPanel contentPanel = new JPanel();
+        contentPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 20, 20)); // Left-aligned with gaps
+        contentPanel.setOpaque(false);
+        
+        // Create scroll pane for algorithms
+        JScrollPane scrollPane = new JScrollPane(contentPanel);
+        scrollPane.setBounds(15, 15, 1270, 470);
+        scrollPane.setBorder(null);
+        scrollPane.setOpaque(false);
+        scrollPane.getViewport().setOpaque(false);
+        
+        // Customize scrollbar
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16); // Faster scrolling
+        scrollPane.getVerticalScrollBar().setUI(new BasicScrollBarUI() {
+            @Override
+            protected void configureScrollBarColors() {
+                this.thumbColor = new Color(50, 205, 50); // Green thumb
+                this.trackColor = new Color(10, 30, 50); // Dark track
+            }
+        });
+        
+        mainContainer.add(scrollPane);
+        algorithmsPanel = contentPanel; // Set the algorithms panel to our content panel
 
         // Initialize algorithm panels
         initializeAlgorithmPanels();
@@ -131,26 +128,25 @@ public class MultiAlgorithmSimulationScreen extends JPanel {
         this.add(fastLabel);
 
         // Control Buttons
-        JButton startButton = createStyledButton(CommonConstants.startDefaultSIM,
+        startButton = createStyledButton(CommonConstants.startDefaultSIM,
                 CommonConstants.startHoverSIM, CommonConstants.startClickSIM, new Dimension(250, 75));
         startButton.setBounds(610, 675, 250, 75);
         this.add(startButton);
-        JButton stopButton = createStyledButton(CommonConstants.stopDefaultSIM,
+        
+        stopButton = createStyledButton(CommonConstants.stopDefaultSIM,
                 CommonConstants.stopHoverSIM, CommonConstants.stopClickSIM, new Dimension(250, 75));
         stopButton.setBounds(870, 675, 250, 75);
         this.add(stopButton);
-        JButton saveButton = createStyledButton(CommonConstants.saveDefaultSIM,
+        
+        saveButton = createStyledButton(CommonConstants.saveDefaultSIM,
                 CommonConstants.saveHoverSIM, CommonConstants.saveClickSIM, new Dimension(250, 75));
         saveButton.setBounds(1130, 675, 250, 75);
         saveButton.setEnabled(false);
         this.add(saveButton);
 
-        startButton.addActionListener(e -> startSimulation(saveButton));
+        startButton.addActionListener(e -> startSimulation());
         stopButton.addActionListener(e -> stopSimulation());
         saveButton.addActionListener(e -> saveSimulation());
-
-        // Show first page
-        showPage(0);
     }
 
     private void initializeAlgorithmPanels() {
@@ -165,54 +161,22 @@ public class MultiAlgorithmSimulationScreen extends JPanel {
                 "MOST FREQUENTLY USED"
         };
 
-        // Create all algorithm panels but don't add them to the layout yet
+        // Create all algorithm panels and add them to the scrollable layout
         for (int i = 0; i < algorithmNames.length; i++) {
             AlgorithmPanel panel = new AlgorithmPanel(algorithmNames[i], frameSize);
             panel.setName(displayNames[i]); // Store full name as component name
+            
+            // Set fixed size for all algorithm panels
+            panel.setPreferredSize(new Dimension(ALGORITHM_PANEL_WIDTH, ALGORITHM_PANEL_HEIGHT));
+            panel.setMinimumSize(new Dimension(ALGORITHM_PANEL_WIDTH, ALGORITHM_PANEL_HEIGHT));
+            panel.setMaximumSize(new Dimension(ALGORITHM_PANEL_WIDTH, ALGORITHM_PANEL_HEIGHT));
+            
             algorithmPanels.add(panel);
+            algorithmsPanel.add(panel);
         }
     }
 
-    private void showPage(int page) {
-        algorithmsPanel.removeAll();
-        currentPage = page;
-
-        // Calculate total pages needed
-        int totalPages = (int) Math.ceil(algorithmPanels.size() / 4.0);
-
-        // Update page indicator
-        pageIndicator.setText("Page " + (page + 1) + "/" + totalPages);
-
-        // Enable/disable navigation buttons
-        prevPageButton.setEnabled(page > 0);
-        nextPageButton.setEnabled(page < totalPages - 1);
-
-        // Add appropriate panels for this page
-        int startIdx = page * 4;
-        int endIdx = Math.min(startIdx + 4, algorithmPanels.size());
-
-        for (int i = startIdx; i < endIdx; i++) {
-            algorithmsPanel.add(algorithmPanels.get(i));
-        }
-
-        algorithmsPanel.revalidate();
-        algorithmsPanel.repaint();
-    }
-
-    private void showNextPage() {
-        int totalPages = (int) Math.ceil(algorithmPanels.size() / 4.0);
-        if (currentPage < totalPages - 1) {
-            showPage(currentPage + 1);
-        }
-    }
-
-    private void showPreviousPage() {
-        if (currentPage > 0) {
-            showPage(currentPage - 1);
-        }
-    }
-
-    private void startSimulation(JButton saveButton) {
+    private void startSimulation() {
         try {
             // Parse reference string and frame size
             String refString = refInput.getText().trim();
@@ -328,5 +292,4 @@ public class MultiAlgorithmSimulationScreen extends JPanel {
         Image img = icon.getImage().getScaledInstance(size.width, size.height, Image.SCALE_SMOOTH);
         return new ImageIcon(img);
     }
-
 }
