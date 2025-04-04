@@ -6,8 +6,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-// import java.util.LinkedList;
-// import java.util.Queue;
 
 class Page {
     int number;
@@ -64,6 +62,9 @@ public class EnhancedSecondChanceSimulationScreen extends JPanel {
         refInput.setText(referenceStringInput);
         refInput.setBorder(BorderFactory.createLineBorder(Color.GREEN, 1));
         refInput.setBounds(300, 30, 800, 30);
+        refInput.setFont(new Font("Arial", Font.BOLD, 16));
+        refInput.setForeground(Color.BLACK);
+        refInput.setEditable(false);
         this.add(refInput);
 
         // Frame Size Input
@@ -76,6 +77,9 @@ public class EnhancedSecondChanceSimulationScreen extends JPanel {
         frameInput.setText(String.valueOf(frameSize));
         frameInput.setBounds(1225, 30, 50, 30);
         frameInput.setBorder(BorderFactory.createLineBorder(Color.GREEN, 1));
+        frameInput.setFont(new Font("Arial", Font.BOLD, 16));
+        frameInput.setForeground(Color.BLACK);
+        frameInput.setEditable(false);
         this.add(frameInput);
 
         // Simulation Title
