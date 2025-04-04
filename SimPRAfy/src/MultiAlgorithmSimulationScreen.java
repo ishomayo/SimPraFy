@@ -1,5 +1,4 @@
 import javax.swing.*;
-import javax.swing.plaf.basic.BasicScrollBarUI;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -11,7 +10,6 @@ import java.util.List;
 public class MultiAlgorithmSimulationScreen extends JPanel {
     private JTextField refInput, frameInput;
     private JPanel algorithmsPanel;
-    private JLabel titleLabel;
     private JSlider speedSlider;
     private Timer timer;
     private String referenceStringInput;
@@ -38,7 +36,7 @@ public class MultiAlgorithmSimulationScreen extends JPanel {
 
         // Back Button (left green circle with arrow)
         JButton backButton = createStyledButton(CommonConstants.backDefault,
-                CommonConstants.backClick, CommonConstants.backClick, new Dimension(50, 50));
+                CommonConstants.backClick2, CommonConstants.backClick2, new Dimension(50, 50));
         backButton.setBounds(20, 70, 50, 50);
         this.add(backButton);
         backButton.addActionListener(e -> layout.show(mainPanel, "AlgorithmSelection"));
@@ -53,6 +51,9 @@ public class MultiAlgorithmSimulationScreen extends JPanel {
         refInput.setText(referenceStringInput);
         refInput.setBorder(BorderFactory.createLineBorder(Color.GREEN, 1));
         refInput.setBounds(300, 30, 800, 30);
+        refInput.setFont(new Font("Arial", Font.BOLD, 16));
+        refInput.setForeground(Color.BLACK);
+        refInput.setEditable(false);
         this.add(refInput);
 
         // Frame Size Input
@@ -65,6 +66,9 @@ public class MultiAlgorithmSimulationScreen extends JPanel {
         frameInput.setText(String.valueOf(frameSize));
         frameInput.setBounds(1225, 30, 50, 30);
         frameInput.setBorder(BorderFactory.createLineBorder(Color.GREEN, 1));
+        frameInput.setFont(new Font("Arial", Font.BOLD, 16));
+        frameInput.setForeground(Color.BLACK);
+        frameInput.setEditable(false);
         this.add(frameInput);
 
         // Main container panel with border
@@ -141,7 +145,7 @@ public class MultiAlgorithmSimulationScreen extends JPanel {
         saveButton.setEnabled(false);
         this.add(saveButton);
 
-        startButton.addActionListener(e -> startSimulation());
+        startButton.addActionListener(e -> startSimulation(saveButton));
         stopButton.addActionListener(e -> stopSimulation());
         saveButton.addActionListener(e -> saveSimulation());
 
@@ -208,7 +212,7 @@ public class MultiAlgorithmSimulationScreen extends JPanel {
         }
     }
 
-    private void startSimulation() {
+    private void startSimulation(JButton saveButton) {
         try {
             // Parse reference string and frame size
             String refString = refInput.getText().trim();
