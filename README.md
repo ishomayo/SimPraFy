@@ -2,7 +2,7 @@
   <img src="logo.png" alt="Logo" width="150">
 </p>
 
-# AlgoriSim
+# SimPraFy
 This is a repository for the implementation of a Page Replacement Algorithm Simulator for a requirement in the course CMSC 125 - M.
 
 # Description
